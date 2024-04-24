@@ -1,20 +1,23 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
+import "react-native-gesture-handler";
+import { useFonts } from "expo-font";
+import HomeNavigator from "./components/HomeNavigator";
+import AuthNavigator from "./components/AuthNavigator";
+import { useState } from "react";
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" />
-    </View>
-  );
-}
+const App = () => {
+  // const isAuth = useSelector(selectIsAuth);
+  const [isAuth, setIsAuth] = useState(false);
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-});
+  const [fontsLoaded] = useFonts({
+    MacPawFixelDisplay_400: require("./assets/fonts/FixelDisplay-Regular.ttf"),
+    MacPawFixelDisplay_600: require("./assets/fonts/FixelDisplay-SemiBold.ttf"),
+  });
+
+  if (!fontsLoaded) {
+    return null;
+  }
+
+  return isAuth ? <HomeNavigator /> : <AuthNavigator />;
+};
+
+export default App;
