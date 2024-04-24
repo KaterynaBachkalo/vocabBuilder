@@ -6,6 +6,10 @@ import {
   View,
   ScrollView,
   Dimensions,
+  Keyboard,
+  TouchableWithoutFeedback,
+  KeyboardAvoidingView,
+  Platform,
 } from "react-native";
 
 import image from "../images/register-login.png";
@@ -15,29 +19,33 @@ const windowWidth = Dimensions.get("window").width;
 
 export default function Register() {
   return (
-    <View style={styles.container}>
+    <ScrollView contentContainerStyle={styles.scrollcontainer}>
       <Image source={image} style={styles.backgroundImage} />
-
       <View style={styles.formContainer}>
         <Text style={styles.title}>Register</Text>
         <Text style={styles.subtitle}>
           To start using our services, please fill out the registration form
           below. All fields are mandatory:
         </Text>
-        <RegisterForm />
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <KeyboardAvoidingView
+            behavior={Platform.OS == "ios" ? "padding" : "height"}
+          >
+            <RegisterForm />
+          </KeyboardAvoidingView>
+        </TouchableWithoutFeedback>
       </View>
-    </View>
+    </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
+  scrollcontainer: {
+    flexGrow: 1,
     alignItems: "center",
     justifyContent: "flex-end",
     backgroundColor: "#ffffff",
   },
-
   backgroundImage: {
     position: "absolute",
     top: 0,
@@ -48,11 +56,14 @@ const styles = StyleSheet.create({
   },
 
   formContainer: {
-    backgroundColor: "#e7e7e7",
+    marginTop: "auto",
+    justifyContent: "flex-end",
+    backgroundColor: "rgb(236, 240, 239)",
     borderTopRightRadius: 25,
     borderTopLeftRadius: 25,
     paddingHorizontal: 16,
-    paddingVertical: 32,
+    paddingTop: 32,
+    paddingBottom: 24,
   },
   title: {
     color: "rgb(18, 20, 23)",

@@ -11,6 +11,7 @@ const App = () => {
   const [fontsLoaded] = useFonts({
     MacPawFixelDisplay_400: require("./assets/fonts/FixelDisplay-Regular.ttf"),
     MacPawFixelDisplay_600: require("./assets/fonts/FixelDisplay-SemiBold.ttf"),
+    MacPawFixelDisplay_700: require("./assets/fonts/FixelDisplay-Bold.ttf"),
   });
 
   if (!fontsLoaded) {

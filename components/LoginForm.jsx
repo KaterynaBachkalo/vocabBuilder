@@ -5,15 +5,11 @@ import * as Yup from "yup";
 import { useNavigation } from "@react-navigation/native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 
-const RegisterForm = () => {
+const LoginForm = () => {
   const navigation = useNavigation();
   const [focusedInput, setFocusedInput] = useState(null);
 
   const SignupSchema = Yup.object().shape({
-    name: Yup.string()
-      .min(2, "Too Short!")
-      .max(50, "Too Long!")
-      .required("Required"),
     email: Yup.string()
       .email()
       .matches(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/, "Please enter valid email")
@@ -33,26 +29,13 @@ const RegisterForm = () => {
 
   return (
     <Formik
-      initialValues={{ name: "", email: "", password: "" }}
+      initialValues={{ email: "", password: "" }}
       onSubmit={onSubmit}
       validationSchema={SignupSchema}
     >
       {({ handleChange, handleSubmit, values, touched, errors }) => (
         <View style={{ gap: 32 }}>
           <View style={{ gap: 14 }}>
-            <TextInput
-              name="name"
-              style={[
-                styles.input,
-                focusedInput === "name" && styles.focusedInput,
-              ]}
-              onChangeText={handleChange("name")}
-              onBlur={() => setFocusedInput(false)}
-              onFocus={() => setFocusedInput("name")}
-              value={values.name}
-              placeholder="Name"
-            />
-            {touched.name && errors.name && <Text>{errors.name}</Text>}
             <TextInput
               name="email"
               style={[
@@ -89,13 +72,13 @@ const RegisterForm = () => {
               onPress={handleSubmit}
               style={styles.buttonRegister}
             >
-              <Text style={styles.textRegister}>Register</Text>
+              <Text style={styles.textRegister}>Login</Text>
             </TouchableOpacity>
             <TouchableOpacity
-              onPress={() => navigation.navigate("Login")}
+              onPress={() => navigation.navigate("Register")}
               style={{ justifyContent: "center", alignItems: "center" }}
             >
-              <Text style={styles.textLogin}>Login</Text>
+              <Text style={styles.textLogin}>Register</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -104,7 +87,7 @@ const RegisterForm = () => {
   );
 };
 
-export default RegisterForm;
+export default LoginForm;
 
 const styles = StyleSheet.create({
   input: {

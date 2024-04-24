@@ -15,7 +15,7 @@ const Navigation = () => {
           options={{
             title: "",
             headerStyle: {
-              height: 50,
+              height: 44,
             },
           }}
         />
@@ -25,7 +25,7 @@ const Navigation = () => {
           options={{
             title: "",
             headerStyle: {
-              height: 50,
+              height: 44,
             },
           }}
         />
