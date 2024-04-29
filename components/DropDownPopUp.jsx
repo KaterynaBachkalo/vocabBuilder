@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Dimensions } from "react-native";
 
 const windowWidth = Dimensions.get("window").width;
 
-const DropDown = () => {
+const DropDownPopUp = () => {
   return (
     <View style={styles.container}>
       <Text>Verb</Text>
@@ -13,21 +13,17 @@ const DropDown = () => {
       <Text>Pronoun</Text>
       <Text>Numerals</Text>
       <Text>Adverb</Text>
-      <Text>Preposition</Text>
-      <Text>Conjuction</Text>
-      <Text>Phrasal verb</Text>
-      <Text>Functional phrase</Text>
     </View>
   );
 };
 
-export default DropDown;
+export default DropDownPopUp;
 
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    width: windowWidth - 36,
-    top: 58,
+    width: windowWidth - 32 - 32,
+    top: 50,
 
     backgroundColor: "#ffffff",
     borderRadius: 15,

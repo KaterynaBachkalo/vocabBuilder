@@ -1,7 +1,8 @@
 import React from "react";
+import { Text } from "react-native";
 
 const WellDoneScreen = () => {
-  return <div>WellDoneScreen</div>;
+  return <Text>WellDoneScreen</Text>;
 };
 
 export default WellDoneScreen;

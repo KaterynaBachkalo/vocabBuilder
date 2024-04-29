@@ -1,7 +1,8 @@
 import React from "react";
+import { Text } from "react-native";
 
 const TrainingScreen = () => {
-  return <div>TrainingScreen</div>;
+  return <Text>TrainingScreen</Text>;
 };
 
 export default TrainingScreen;

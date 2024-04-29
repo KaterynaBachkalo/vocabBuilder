@@ -1,0 +1,25 @@
+<svg width="28.000000" height="28.000000" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+	<defs>
+		<clipPath id="clip126_1583">
+			<rect id="united kingdom" width="28.000000" height="28.000000" fill="white" fill-opacity="0"/>
+		</clipPath>
+	</defs>
+	<rect id="united kingdom" width="28.000000" height="28.000000" fill="#FFFFFF" fill-opacity="0"/>
+	<g clip-path="url(#clip126_1583)">
+		<path id="Vector" d="M28 14C28 21.73 21.73 28 14 28C6.26 28 0 21.73 0 14C0 6.26 6.26 0 14 0C21.73 0 28 6.26 28 14Z" fill="#F0F0F0" fill-opacity="1.000000" fill-rule="evenodd"/>
+		<path id="Vector" d="M2.89 5.47C1.79 6.9 0.96 8.55 0.48 10.34L7.76 10.34L2.89 5.47Z" fill="#0052B4" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M27.51 10.34C27.03 8.55 26.2 6.9 25.1 5.47L20.23 10.34L27.51 10.34Z" fill="#0052B4" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M0.48 17.65C0.96 19.44 1.79 21.09 2.89 22.52L7.76 17.65L0.48 17.65Z" fill="#0052B4" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M22.52 2.89C21.09 1.79 19.44 0.96 17.65 0.48L17.65 7.76L22.52 2.89Z" fill="#0052B4" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M5.47 25.1C6.9 26.2 8.55 27.03 10.34 27.51L10.34 20.23L5.47 25.1Z" fill="#0052B4" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M10.34 0.48C8.55 0.96 6.9 1.79 5.47 2.89L10.34 7.76L10.34 0.48Z" fill="#0052B4" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M17.65 27.51C19.44 27.03 21.09 26.2 22.52 25.1L17.65 20.23L17.65 27.51Z" fill="#0052B4" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M20.23 17.65L25.1 22.52C26.2 21.09 27.03 19.44 27.51 17.65L20.23 17.65Z" fill="#0052B4" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M27.88 12.17L15.82 12.17L15.82 12.17L15.82 0.11C15.22 0.04 14.61 0 14 0C13.38 0 12.77 0.04 12.17 0.11L12.17 12.17L12.17 12.17L0.11 12.17C0.04 12.77 0 13.38 0 14C0 14.61 0.04 15.22 0.11 15.82L12.17 15.82L12.17 15.82L12.17 27.88C12.77 27.95 13.38 28 14 28C14.61 28 15.22 27.95 15.82 27.88L15.82 15.82L15.82 15.82L27.88 15.82C27.95 15.22 28 14.61 28 14C28 13.38 27.95 12.77 27.88 12.17Z" fill="#D80027" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M17.65 17.65L23.9 23.89C24.18 23.61 24.46 23.31 24.72 23L19.37 17.65L17.65 17.65L17.65 17.65Z" fill="#D80027" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M10.34 17.65L10.34 17.65L4.09 23.89C4.38 24.18 4.68 24.46 4.99 24.72L10.34 19.37L10.34 17.65Z" fill="#D80027" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M10.34 10.34L10.34 10.34L4.09 4.1C3.81 4.38 3.53 4.68 3.27 4.99L8.62 10.34L10.34 10.34L10.34 10.34Z" fill="#D80027" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M17.65 10.34L23.9 4.1C23.61 3.81 23.31 3.53 23 3.27L17.65 8.62L17.65 10.34Z" fill="#D80027" fill-opacity="1.000000" fill-rule="nonzero"/>
+	</g>
+</svg>
