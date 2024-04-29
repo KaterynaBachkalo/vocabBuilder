@@ -21,6 +21,9 @@ export default function Login() {
   return (
     <ScrollView contentContainerStyle={styles.scrollcontainer}>
       <Image source={image} style={styles.backgroundImage} />
+      <Text style={styles.backgroundText}>
+        Word · Translation · Grammar · Progress
+      </Text>
       <View style={styles.formContainer}>
         <Text style={styles.title}>Login</Text>
         <Text style={styles.subtitle}>
@@ -41,9 +44,9 @@ export default function Login() {
 const styles = StyleSheet.create({
   scrollcontainer: {
     flexGrow: 1,
-    alignItems: "center",
+
     justifyContent: "flex-end",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#F8F8F8",
   },
   backgroundImage: {
     position: "absolute",
@@ -53,7 +56,17 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     zIndex: -10,
   },
+  backgroundText: {
+    position: "absolute",
+    width: "100%",
+    textAlign: "center",
 
+    top: 207,
+    left: windowWidth / 2,
+    transform: [{ translateX: -windowWidth / 2 }],
+    fontFamily: "MacPawFixelDisplay_400",
+    fontSize: 14,
+  },
   formContainer: {
     marginTop: "auto",
     justifyContent: "flex-end",

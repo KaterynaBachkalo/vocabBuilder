@@ -1,15 +1,23 @@
-import React from "react";
-import { StyleSheet, Text, View, Image } from "react-native";
-import logo from "../images/Logo_Craftwork.png";
+import React, { useEffect } from "react";
+import { StyleSheet, Text, TouchableOpacity } from "react-native";
+import Logo from "../images/icons/logo.svg";
+import { useNavigation } from "@react-navigation/native";
 
 const Home = () => {
+  const navigation = useNavigation();
+
+  useEffect(() => {
+    navigation.navigate("DictionaryScreen");
+  }, []);
+
   return (
-    <>
-      <View style={styles.container}>
-        <Image source={logo} style={styles.logo} />
-        <Text style={styles.subtitle}>VocabBuilder</Text>
-      </View>
-    </>
+    <TouchableOpacity
+      style={styles.container}
+      onPress={() => navigation.navigate("DictionaryScreen")}
+    >
+      <Logo />
+      <Text style={styles.subtitle}>VocabBuilder</Text>
+    </TouchableOpacity>
   );
 };
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { NavigationContainer } from "@react-navigation/native";
 import { createStackNavigator } from "@react-navigation/stack";
 import Home from "../screens/Home";
@@ -7,10 +7,29 @@ import AddWordScreen from "../screens/AddWordScreen";
 import RecommendScreen from "../screens/RecommendScreen";
 import TrainingScreen from "../screens/TrainingScreen";
 import WellDoneScreen from "../screens/WellDoneScreen";
+import {
+  View,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  Image,
+  Dimensions,
+} from "react-native";
+import Menu from "../components/Menu";
+
+import Logo from "../images/icons/logo.svg";
+import IconUser from "../images/icons/userDefault.svg";
+import IconBurgerMenu from "../images/icons/burger.svg";
+
+import imageMenu from "../images/illustration.png";
+import Header from "./Header";
 
 const MainStack = createStackNavigator();
+const windowHeight = Dimensions.get("window").height;
 
 const HomeNavigator = () => {
+  const [isOpenMenu, setOpenMenu] = useState(false);
+
   return (
     <NavigationContainer>
       <MainStack.Navigator initialRouteName="Home">
@@ -22,52 +41,177 @@ const HomeNavigator = () => {
           }}
         />
         <MainStack.Screen
-          name="Dictionary screen"
+          name="DictionaryScreen"
           component={DictionaryScreen}
           options={{
             title: "",
+            headerLeft: () => (
+              <View style={styles.headerLeft}>
+                <Logo />
+                <Text style={styles.subtitle}>VocabBuilder</Text>
+              </View>
+            ),
+            headerRight: () => (
+              <View style={styles.headerRight}>
+                <Text>Name</Text>
+                <IconUser />
+                {!isOpenMenu ? (
+                  <TouchableOpacity onPress={() => setOpenMenu(true)}>
+                    <IconBurgerMenu />
+                  </TouchableOpacity>
+                ) : (
+                  <View style={styles.menu}>
+                    <View style={{ padding: 16, gap: 100 }}>
+                      <Header onClose={setOpenMenu} />
+                      <Menu />
+                    </View>
+                    <Image source={imageMenu} />
+                  </View>
+                )}
+              </View>
+            ),
             headerStyle: {
-              height: 70,
+              backgroundColor: "#ffffff",
             },
           }}
         />
         <MainStack.Screen
-          name="AddWord screen"
+          name="AddWordScreen"
           component={AddWordScreen}
           options={{
             title: "",
+            headerLeft: () => (
+              <View style={styles.headerLeft}>
+                <Logo />
+                <Text style={styles.subtitle}>VocabBuilder</Text>
+              </View>
+            ),
+            headerRight: () => (
+              <View style={styles.headerRight}>
+                <Text>Name</Text>
+                <IconUser />
+                {!isOpenMenu ? (
+                  <TouchableOpacity onPress={() => setOpenMenu(true)}>
+                    <IconBurgerMenu />
+                  </TouchableOpacity>
+                ) : (
+                  <View style={styles.menu}>
+                    <View style={{ padding: 16, gap: 100 }}>
+                      <Header onClose={setOpenMenu} />
+                      <Menu />
+                    </View>
+                    <Image source={imageMenu} />
+                  </View>
+                )}
+              </View>
+            ),
             headerStyle: {
-              height: 70,
+              backgroundColor: "#ffffff",
             },
           }}
         />
         <MainStack.Screen
-          name="Recommend screen"
+          name="RecommendScreen"
           component={RecommendScreen}
           options={{
             title: "",
+            headerLeft: () => (
+              <View style={styles.headerLeft}>
+                <Logo />
+                <Text style={styles.subtitle}>VocabBuilder</Text>
+              </View>
+            ),
+            headerRight: () => (
+              <View style={styles.headerRight}>
+                <Text>Name</Text>
+                <IconUser />
+                {!isOpenMenu ? (
+                  <TouchableOpacity onPress={() => setOpenMenu(true)}>
+                    <IconBurgerMenu />
+                  </TouchableOpacity>
+                ) : (
+                  <View style={styles.menu}>
+                    <View style={{ padding: 16, gap: 100 }}>
+                      <Header onClose={setOpenMenu} />
+                      <Menu />
+                    </View>
+                    <Image source={imageMenu} />
+                  </View>
+                )}
+              </View>
+            ),
             headerStyle: {
-              height: 70,
+              backgroundColor: "#ffffff",
             },
           }}
         />
         <MainStack.Screen
-          name="Training screen"
+          name="TrainingScreen"
           component={TrainingScreen}
           options={{
             title: "",
+            headerLeft: () => (
+              <View style={styles.headerLeft}>
+                <Logo />
+                <Text style={styles.subtitle}>VocabBuilder</Text>
+              </View>
+            ),
+            headerRight: () => (
+              <View style={styles.headerRight}>
+                <Text>Name</Text>
+                <IconUser />
+                {!isOpenMenu ? (
+                  <TouchableOpacity onPress={() => setOpenMenu(true)}>
+                    <IconBurgerMenu />
+                  </TouchableOpacity>
+                ) : (
+                  <View style={styles.menu}>
+                    <View style={{ padding: 16, gap: 100 }}>
+                      <Header onClose={setOpenMenu} />
+                      <Menu />
+                    </View>
+                    <Image source={imageMenu} />
+                  </View>
+                )}
+              </View>
+            ),
             headerStyle: {
-              height: 70,
+              backgroundColor: "#ffffff",
             },
           }}
         />
         <MainStack.Screen
-          name="WellDone screen"
+          name="WellDoneScreen"
           component={WellDoneScreen}
           options={{
             title: "",
+            headerLeft: () => (
+              <View style={styles.headerLeft}>
+                <Logo />
+                <Text style={styles.subtitle}>VocabBuilder</Text>
+              </View>
+            ),
+            headerRight: () => (
+              <View style={styles.headerRight}>
+                <Text>Name</Text>
+                <IconUser />
+                {!isOpenMenu ? (
+                  <TouchableOpacity onPress={() => setOpenMenu(true)}>
+                    <IconBurgerMenu />
+                  </TouchableOpacity>
+                ) : (
+                  <View style={styles.menu}>
+                    <View style={{ padding: 16, gap: 100 }}>
+                      <Header onClose={setOpenMenu} />
+                      <Menu />
+                    </View>
+                    <Image source={imageMenu} />
+                  </View>
+                )}
+              </View>
+            ),
             headerStyle: {
-              height: 70,
+              backgroundColor: "#ffffff",
             },
           }}
         />
@@ -77,3 +221,43 @@ const HomeNavigator = () => {
 };
 
 export default HomeNavigator;
+
+const styles = StyleSheet.create({
+  subtitle: {
+    fontFamily: "MacPawFixelDisplay_600",
+    fontSize: 18,
+    lineHeight: 24,
+    color: "#121417",
+  },
+  headerLeft: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingLeft: 16,
+    paddingTop: 16,
+    paddingBottom: 16,
+  },
+  headerRight: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "center",
+    gap: 4,
+    paddingRight: 16,
+    paddingTop: 16,
+    paddingBottom: 16,
+  },
+  menu: {
+    position: "absolute",
+    right: 0,
+    top: 0,
+    backgroundColor: "#85AA9F",
+    width: 185,
+    height: windowHeight,
+
+    justifyContent: "space-between",
+  },
+  cross: {
+    alignSelf: "flex-end",
+  },
+});

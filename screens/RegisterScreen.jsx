@@ -44,7 +44,7 @@ const styles = StyleSheet.create({
     flexGrow: 1,
     alignItems: "center",
     justifyContent: "flex-end",
-    backgroundColor: "#ffffff",
+    backgroundColor: "#F8F8F8",
   },
   backgroundImage: {
     position: "absolute",

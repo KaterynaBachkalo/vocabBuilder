@@ -1,13 +1,23 @@
 import React, { useState } from "react";
-import { StyleSheet, Text, TextInput, View } from "react-native";
-import { Formik } from "formik";
+import {
+  StyleSheet,
+  Text,
+  TextInput,
+  View,
+  TouchableOpacity,
+} from "react-native";
+import { useForm, Controller } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
 import * as Yup from "yup";
 import { useNavigation } from "@react-navigation/native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import IconOff from "../images/icons/icon-off.svg";
+import IconOn from "../images/icons/icon-on.svg";
+import IconError from "../images/icons/error.svg";
 
 const LoginForm = () => {
   const navigation = useNavigation();
   const [focusedInput, setFocusedInput] = useState(null);
+  const [eyeOff, setEyeOff] = useState(true);
 
   const SignupSchema = Yup.object().shape({
     email: Yup.string()
@@ -22,68 +32,128 @@ const LoginForm = () => {
       .required("Required"),
   });
 
-  const onSubmit = (values, { resetForm }) => {
-    console.log(values);
-    resetForm();
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(SignupSchema),
+  });
+
+  const onSubmit = (data) => {
+    console.log(data);
+    reset();
   };
 
   return (
-    <Formik
-      initialValues={{ email: "", password: "" }}
-      onSubmit={onSubmit}
-      validationSchema={SignupSchema}
-    >
-      {({ handleChange, handleSubmit, values, touched, errors }) => (
-        <View style={{ gap: 32 }}>
-          <View style={{ gap: 14 }}>
-            <TextInput
-              name="email"
-              style={[
-                styles.input,
-                focusedInput === "email" && styles.focusedInput,
-              ]}
-              onChangeText={handleChange("email")}
-              onBlur={() => setFocusedInput(false)}
-              onFocus={() => setFocusedInput("email")}
-              value={values.email}
-              placeholder="Email"
-            />
-            {touched.email && errors.email && <Text>{errors.email}</Text>}
-            <TextInput
-              name="password"
-              style={[
-                styles.input,
-                focusedInput === "password" && styles.focusedInput,
-              ]}
-              onChangeText={handleChange("password")}
-              onBlur={() => setFocusedInput(false)}
-              onFocus={() => setFocusedInput("password")}
-              value={values.password}
-              secureTextEntry
-              placeholder="Password"
-            />
-            {touched.password && errors.password && (
-              <Text>{errors.password}</Text>
+    <View style={{ gap: 32 }}>
+      <View style={{ gap: 14 }}>
+        <View style={{ position: "relative" }}>
+          <Controller
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                style={[
+                  styles.input,
+                  focusedInput === "email" && styles.focusedInput,
+                  errors.email && styles.errorInput,
+                ]}
+                onBlur={() => setFocusedInput(false)}
+                onFocus={() => setFocusedInput("email")}
+                onChangeText={onChange}
+                value={value}
+                placeholder="Email"
+              />
             )}
-          </View>
-
-          <View style={{ gap: 16 }}>
-            <TouchableOpacity
-              onPress={handleSubmit}
-              style={styles.buttonRegister}
+            name="email"
+            rules={{ required: true }}
+            defaultValue=""
+          />
+          {errors.email && (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 4,
+              }}
             >
-              <Text style={styles.textRegister}>Login</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              onPress={() => navigation.navigate("Register")}
-              style={{ justifyContent: "center", alignItems: "center" }}
-            >
-              <Text style={styles.textLogin}>Register</Text>
-            </TouchableOpacity>
-          </View>
+              <IconError />
+              <Text style={styles.errorMessage}>{errors.email.message}</Text>
+            </View>
+          )}
         </View>
-      )}
-    </Formik>
+
+        <View style={{ position: "relative" }}>
+          <Controller
+            control={control}
+            render={({ field: { onChange, value } }) => (
+              <TextInput
+                style={[
+                  styles.input,
+                  focusedInput === "password" && styles.focusedInput,
+                  errors.password && styles.errorInput,
+                ]}
+                onBlur={() => setFocusedInput(false)}
+                onFocus={() => setFocusedInput("password")}
+                onChangeText={onChange}
+                value={value}
+                placeholder="Password"
+                secureTextEntry={eyeOff ? true : false}
+              />
+            )}
+            name="password"
+            rules={{ required: true }}
+            defaultValue=""
+          />
+          {eyeOff ? (
+            <TouchableOpacity
+              onPress={() => setEyeOff(false)}
+              style={styles.eye}
+            >
+              <IconOff />
+            </TouchableOpacity>
+          ) : (
+            <TouchableOpacity
+              onPress={() => setEyeOff(true)}
+              style={styles.eye}
+            >
+              <IconOn />
+            </TouchableOpacity>
+          )}
+
+          {errors.password && (
+            <View
+              style={{
+                flexDirection: "row",
+                alignItems: "center",
+                gap: 4,
+                position: "absolute",
+                bottom: -18,
+              }}
+            >
+              <IconError />
+              <Text style={styles.errorMessage}>{errors.password.message}</Text>
+            </View>
+          )}
+        </View>
+      </View>
+
+      <View style={{ gap: 16 }}>
+        <TouchableOpacity
+          onPress={handleSubmit(onSubmit)}
+          style={styles.buttonLogin}
+        >
+          <Text style={styles.textLogin}>Login</Text>
+        </TouchableOpacity>
+        <TouchableOpacity
+          onPress={() => navigation.navigate("Register")}
+          style={{ justifyContent: "center", alignItems: "center" }}
+        >
+          <Text style={styles.textRegister}>Register</Text>
+        </TouchableOpacity>
+      </View>
+    </View>
   );
 };
 
@@ -101,24 +171,40 @@ const styles = StyleSheet.create({
   focusedInput: {
     borderColor: "rgb(133, 170, 159)",
   },
-  buttonRegister: {
+  buttonLogin: {
     justifyContent: "center",
     alignItems: "center",
     borderRadius: 30,
     backgroundColor: "rgb(133, 170, 159)",
     padding: 16,
   },
-  textRegister: {
+  textLogin: {
     color: "#FCFCFC",
     fontFamily: "MacPawFixelDisplay_700",
     fontSize: 16,
     lineHeight: 24,
   },
-  textLogin: {
+  textRegister: {
     color: "rgba(18, 20, 23, 0.5)",
     fontFamily: "MacPawFixelDisplay_700",
     fontSize: 16,
     lineHeight: 24,
     textDecorationLine: "underline",
+  },
+  eye: {
+    position: "absolute",
+    right: 18,
+    top: "50%",
+    transform: [{ translateY: -10 }],
+  },
+  errorMessage: {
+    color: "#D80027",
+    fontSize: 12,
+    display: "flex",
+    gap: 10,
+    alignItems: "center",
+  },
+  errorInput: {
+    borderColor: "#D80027",
   },
 });
