@@ -19,7 +19,7 @@ const LoginForm = () => {
   const [focusedInput, setFocusedInput] = useState(null);
   const [eyeOff, setEyeOff] = useState(true);
 
-  const SignupSchema = Yup.object().shape({
+  const SignupIn = Yup.object().shape({
     email: Yup.string()
       .email()
       .matches(/^\w+@[a-zA-Z_]+?\.[a-zA-Z]{2,3}$/, "Please enter valid email")
@@ -38,7 +38,7 @@ const LoginForm = () => {
     formState: { errors },
     reset,
   } = useForm({
-    resolver: yupResolver(SignupSchema),
+    resolver: yupResolver(SignupIn),
   });
 
   const onSubmit = (data) => {
