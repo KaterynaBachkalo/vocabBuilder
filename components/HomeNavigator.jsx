@@ -23,12 +23,16 @@ import IconBurgerMenu from "../images/icons/burger.svg";
 
 import imageMenu from "../images/illustration.png";
 import Header from "./Header";
+import { useSelector } from "react-redux";
+import { selectAuthUser } from "../redux/auth/selectors";
 
 const MainStack = createStackNavigator();
 const windowHeight = Dimensions.get("window").height;
 
 const HomeNavigator = () => {
   const [isOpenMenu, setOpenMenu] = useState(false);
+
+  const currentUser = useSelector(selectAuthUser);
 
   return (
     <NavigationContainer>
@@ -53,7 +57,7 @@ const HomeNavigator = () => {
             ),
             headerRight: () => (
               <View style={styles.headerRight}>
-                <Text>Name</Text>
+                <Text style={styles.name}>{currentUser.name}</Text>
                 <IconUser />
                 {!isOpenMenu ? (
                   <TouchableOpacity onPress={() => setOpenMenu(true)}>
@@ -259,5 +263,11 @@ const styles = StyleSheet.create({
   },
   cross: {
     alignSelf: "flex-end",
+  },
+  name: {
+    color: "rgb(18, 20, 23)",
+    fontFamily: "MacPawFixelDisplay_500",
+    fontSize: 16,
+    lineHeight: 22,
   },
 });

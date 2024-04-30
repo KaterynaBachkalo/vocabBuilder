@@ -29,7 +29,9 @@ const DropDown = () => {
             key={category}
             onPress={() => setSelectedCategory(category)}
           >
-            <Text style={styles.text}>{category}</Text>
+            <Text style={styles.text}>
+              {category.charAt(0).toUpperCase() + category.slice(1)}
+            </Text>
           </TouchableOpacity>
         ))}
     </View>

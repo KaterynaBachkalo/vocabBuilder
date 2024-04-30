@@ -2,8 +2,12 @@ import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import IconUserMenu from "../images/icons/userDefaultMenu.svg";
 import IconCross from "../images/icons/cross.svg";
+import { useSelector } from "react-redux";
+import { selectAuthUser } from "../redux/auth/selectors";
 
 const Header = ({ onClose }) => {
+  const currentUser = useSelector(selectAuthUser);
+
   return (
     <View
       style={{
@@ -18,7 +22,7 @@ const Header = ({ onClose }) => {
           gap: 8,
         }}
       >
-        <Text>Name</Text>
+        <Text style={styles.name}>{currentUser?.name}</Text>
         <IconUserMenu />
       </View>
       <TouchableOpacity onPress={() => onClose(false)}>
@@ -33,5 +37,11 @@ export default Header;
 const styles = StyleSheet.create({
   cross: {
     alignSelf: "flex-end",
+  },
+  name: {
+    color: "rgb(252, 252, 252)",
+    fontFamily: "MacPawFixelDisplay_500",
+    fontSize: 16,
+    lineHeight: 22,
   },
 });

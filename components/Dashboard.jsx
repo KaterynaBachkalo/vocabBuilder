@@ -9,7 +9,7 @@ const Dashboard = () => {
   return (
     <>
       <Filters />
-      <View style={{ marginTop: 40, gap: 8, marginBottom: 32 }}>
+      <View style={{ marginTop: 8, gap: 8 }}>
         <Statistics />
         <View style={{ flexDirection: "row", gap: 16 }}>
           <AddWordBtn />
