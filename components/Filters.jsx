@@ -1,12 +1,22 @@
 import React, { useState } from "react";
-import { StyleSheet, TextInput, View, TouchableOpacity } from "react-native";
+import {
+  StyleSheet,
+  TextInput,
+  View,
+  TouchableOpacity,
+  Dimensions,
+} from "react-native";
 import { useForm, Controller } from "react-hook-form";
 import IconVector from "../images/icons/vector.svg";
 import IconSearch from "../images/icons/search.svg";
 import DropDown from "./DropDown";
+import RadioButtons from "./RadioButtons";
+
+const windowWidth = Dimensions.get("window").width;
 
 const Filters = () => {
   const [isOpenDropdown, setOpenDropdown] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState(false);
 
   const {
     control,
@@ -18,6 +28,11 @@ const Filters = () => {
   const onSubmit = (data) => {
     console.log(data);
     reset();
+  };
+
+  const handleSelectCategory = (selected) => {
+    setSelectedCategory(selected);
+    setOpenDropdown(false);
   };
 
   return (
@@ -47,28 +62,46 @@ const Filters = () => {
       </View>
 
       <View style={{ position: "relative" }}>
-        <Controller
-          control={control}
-          render={({ field: { onChange, value, onBlur } }) => (
-            <TextInput
-              style={styles.input}
-              onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
-              placeholder="Categories"
+        <View style={{ position: "relative" }}>
+          <Controller
+            control={control}
+            render={({ field: { onChange, onBlur } }) => (
+              <TextInput
+                style={styles.input}
+                onBlur={onBlur}
+                onChangeText={onChange}
+                value={selectedCategory}
+                placeholder="Categories"
+              />
+            )}
+            name="categories"
+            rules={{ required: true }}
+            defaultValue=""
+          />
+          <TouchableOpacity
+            style={styles.iconVector}
+            onPress={() => setOpenDropdown(!isOpenDropdown)}
+          >
+            <IconVector />
+          </TouchableOpacity>
+          {isOpenDropdown && (
+            <DropDown
+              onSelect={handleSelectCategory}
+              widthContainer={windowWidth - 36}
+              heightContainer={368}
+              colorText="rgb(18, 20, 23)"
             />
           )}
-          name="categories"
-          rules={{ required: true }}
-          defaultValue=""
-        />
-        <TouchableOpacity
-          style={styles.iconVector}
-          onPress={() => setOpenDropdown(!isOpenDropdown)}
-        >
-          <IconVector />
-        </TouchableOpacity>
-        {isOpenDropdown && <DropDown />}
+        </View>
+        {selectedCategory === "Verb" && (
+          <View style={styles.radioButtons}>
+            <RadioButtons
+              color="rgb(133, 170, 159)"
+              uncheckedColor="rgba(18, 20, 23, 0.2)"
+              colorText="rgb(18, 20, 23)"
+            />
+          </View>
+        )}
       </View>
     </View>
   );
@@ -111,5 +144,10 @@ const styles = StyleSheet.create({
   },
   errorInput: {
     borderColor: "#D80027",
+  },
+  radioButtons: {
+    position: "absolute",
+    bottom: -35,
+    left: 0,
   },
 });

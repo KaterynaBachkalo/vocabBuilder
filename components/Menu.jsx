@@ -1,8 +1,16 @@
 import React from "react";
 import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import IconArrow from "../images/icons/arrow.svg";
+import { useDispatch } from "react-redux";
+import { logOutThunk } from "../redux/auth/operations";
 
 const Menu = () => {
+  const dispatch = useDispatch();
+
+  const handleLogOut = () => {
+    dispatch(logOutThunk());
+  };
+
   return (
     <View style={{ gap: 28 }}>
       <TouchableOpacity style={styles.buttonActive}>
@@ -15,7 +23,7 @@ const Menu = () => {
       <TouchableOpacity style={styles.button}>
         <Text style={styles.buttonText}>Training</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.logOut}>
+      <TouchableOpacity style={styles.logOut} onPress={handleLogOut}>
         <Text style={styles.buttonText}>Log out</Text>
         <IconArrow />
       </TouchableOpacity>

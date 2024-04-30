@@ -1,11 +1,22 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchStatistics } from "../redux/words/operations";
+import { selectStatisticNumber } from "../redux/words/selectors";
 
 const Statistics = () => {
+  const dispatch = useDispatch();
+
+  const quantity = useSelector(selectStatisticNumber);
+
+  useEffect(() => {
+    dispatch(fetchStatistics());
+  }, [dispatch]);
+
   return (
     <View style={styles.wrap}>
       <Text style={styles.title}>To study:</Text>
-      <Text style={styles.number}>20</Text>
+      <Text style={styles.number}>{quantity.totalCount}</Text>
     </View>
   );
 };

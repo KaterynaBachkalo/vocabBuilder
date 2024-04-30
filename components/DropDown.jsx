@@ -1,40 +1,56 @@
 import React, { useEffect, useState } from "react";
 import {
-  View,
   Text,
   StyleSheet,
-  Dimensions,
   TouchableOpacity,
+  ScrollView,
+  View,
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWordsCategories } from "../redux/words/operations";
 import { selectWords } from "../redux/words/selectors";
 
-const windowWidth = Dimensions.get("window").width;
-
-const DropDown = () => {
+const DropDown = ({ onSelect, widthContainer, heightContainer, colorText }) => {
   const dispatch = useDispatch();
   const categories = useSelector(selectWords);
-  const [selectedCategory, setSelectedCategory] = useState("");
+
+  const categoriesUpperCase = categories.map(
+    (i) => i.charAt(0).toUpperCase() + i.slice(1)
+  );
+
+  const handleSelect = (category) => {
+    onSelect(category);
+  };
 
   useEffect(() => {
     dispatch(fetchWordsCategories());
   }, []);
 
   return (
-    <View style={styles.container}>
-      {categories.lenght !== 0 &&
-        categories.map((category) => (
-          <TouchableOpacity
-            key={category}
-            onPress={() => setSelectedCategory(category)}
-          >
-            <Text style={styles.text}>
-              {category.charAt(0).toUpperCase() + category.slice(1)}
-            </Text>
-          </TouchableOpacity>
-        ))}
-    </View>
+    <ScrollView
+      contentContainerStyle={{ flexGrow: 1 }}
+      style={[
+        styles.container,
+        {
+          width: widthContainer,
+          height: heightContainer,
+        },
+      ]}
+    >
+      <View style={styles.wrap}>
+        {categories.lenght !== 0 &&
+          categoriesUpperCase.map((category) => (
+            <TouchableOpacity
+              key={category}
+              onPress={() => handleSelect(category)}
+            >
+              <Text style={[styles.text, { color: colorText }]}>
+                {category}
+              </Text>
+            </TouchableOpacity>
+          ))}
+      </View>
+    </ScrollView>
   );
 };
 
@@ -43,14 +59,11 @@ export default DropDown;
 const styles = StyleSheet.create({
   container: {
     position: "absolute",
-    width: windowWidth - 36,
     top: 58,
 
     backgroundColor: "#ffffff",
     borderRadius: 15,
-    paddingVertical: 12,
-    paddingHorizontal: 24,
-    gap: 8,
+
     zIndex: 100,
     shadowColor: "rgb(18, 20, 23)",
     shadowOffset: {
@@ -59,6 +72,11 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.08,
     elevation: 2,
+  },
+  wrap: {
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    gap: 8,
   },
   text: {
     fontFamily: "MacPawFixelDisplay_500",

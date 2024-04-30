@@ -14,27 +14,30 @@ import IconCross from "../images/icons/cross.svg";
 import IconVectorWhite from "../images/icons/vector-white.svg";
 import IconUkr from "../images/icons/ukr.svg";
 import IconEng from "../images/icons/eng.svg";
-
-import DropDownPopUp from "../components/DropDownPopUp";
-import { RadioButton } from "react-native-paper";
+import RadioButtons from "../components/RadioButtons";
+import DropDown from "../components/DropDown";
 
 const windowWidth = Dimensions.get("window").width;
+const windowHeight = Dimensions.get("window").height;
 
 const AddWordScreen = () => {
   const [isOpenDropdown, setOpenDropdown] = useState(false);
   const [inputValue, setInputValue] = useState("");
   const [radioValue, setRadioValue] = useState("regular");
   const [textInputValue, setTextInputValue] = useState("");
-  const [textSelectValue, setTextSelectValue] = useState("");
   const [visible, setVisible] = useState(true);
-  const [isSelectedVerb, setSsSelectedVerb] = useState(true);
-  const [selectedValue, setSelectedValue] = useState("regular");
+  const [selectedCategory, setSelectedCategory] = useState(false);
 
   const navigation = useNavigation();
 
   const onClose = () => {
     setVisible(false);
     navigation.navigate("DictionaryScreen");
+  };
+
+  const handleSelectCategory = (selected) => {
+    setSelectedCategory(selected);
+    setOpenDropdown(false);
   };
 
   const handleAdd = () => {
@@ -82,7 +85,7 @@ const AddWordScreen = () => {
             <TextInput
               style={styles.input}
               onChangeText={setTextInputValue}
-              value={textSelectValue}
+              value={selectedCategory}
             />
             <TouchableOpacity
               style={styles.iconVector}
@@ -90,38 +93,25 @@ const AddWordScreen = () => {
             >
               <IconVectorWhite />
             </TouchableOpacity>
-            {isOpenDropdown && <DropDownPopUp />}
+            {isOpenDropdown && (
+              <DropDown
+                onSelect={handleSelectCategory}
+                widthContainer={windowWidth - 64}
+                heightContainer={240}
+                colorText="rgba(18, 20, 23, 0.5)"
+              />
+            )}
           </View>
 
-          {isSelectedVerb && (
-            <View style={styles.radioGroup}>
-              <View style={styles.radioButton}>
-                <RadioButton.Android
-                  value="regular"
-                  status={selectedValue === "regular" ? "checked" : "unchecked"}
-                  onPress={() => setSelectedValue("regular")}
-                  color="rgb(252, 252, 252)"
-                  uncheckedColor="rgb(252, 252, 252)"
-                />
-                <Text style={styles.radioLabel}>Regular</Text>
-              </View>
-
-              <View style={styles.radioButton}>
-                <RadioButton.Android
-                  value="irregular"
-                  status={
-                    selectedValue === "irregular" ? "checked" : "unchecked"
-                  }
-                  onPress={() => setSelectedValue("irregular")}
-                  color="rgb(252, 252, 252)"
-                  uncheckedColor="rgb(252, 252, 252)"
-                />
-                <Text style={styles.radioLabel}>Irregular</Text>
-              </View>
-            </View>
+          {selectedCategory === "Verb" && (
+            <RadioButtons
+              color="rgb(252, 252, 252)"
+              uncheckedColor="rgb(252, 252, 252)"
+              colorText="rgb(252, 252, 252)"
+            />
           )}
 
-          <View style={{ gap: 16, marginBottom: 32 }}>
+          <View style={{ gap: 16, marginVertical: 32 }}>
             <View>
               <View
                 style={{
@@ -187,6 +177,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "rgba(18, 20, 23, 0.2)",
     padding: 16,
+    height: windowHeight - 32,
   },
   popup: {
     backgroundColor: "rgb(133, 170, 159)",

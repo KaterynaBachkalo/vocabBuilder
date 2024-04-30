@@ -26,6 +26,7 @@ const INITIAL_STATE = {
   items: [],
   isLoading: false,
   error: null,
+  quantity: null,
 };
 
 const wordsSlice = createSlice({
@@ -82,7 +83,7 @@ const wordsSlice = createSlice({
 
       .addCase(fetchStatistics.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items = action.payload;
+        state.quantity = action.payload;
         state.error = null;
       })
 

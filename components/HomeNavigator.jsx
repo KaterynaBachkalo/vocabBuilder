@@ -57,7 +57,7 @@ const HomeNavigator = () => {
             ),
             headerRight: () => (
               <View style={styles.headerRight}>
-                <Text style={styles.name}>{currentUser.name}</Text>
+                <Text style={styles.name}>{currentUser?.name}</Text>
                 <IconUser />
                 {!isOpenMenu ? (
                   <TouchableOpacity onPress={() => setOpenMenu(true)}>
@@ -92,7 +92,7 @@ const HomeNavigator = () => {
             ),
             headerRight: () => (
               <View style={styles.headerRight}>
-                <Text>Name</Text>
+                <Text>{currentUser?.name}</Text>
                 <IconUser />
                 {!isOpenMenu ? (
                   <TouchableOpacity onPress={() => setOpenMenu(true)}>
@@ -127,7 +127,7 @@ const HomeNavigator = () => {
             ),
             headerRight: () => (
               <View style={styles.headerRight}>
-                <Text>Name</Text>
+                <Text>{currentUser?.name}</Text>
                 <IconUser />
                 {!isOpenMenu ? (
                   <TouchableOpacity onPress={() => setOpenMenu(true)}>
@@ -162,7 +162,7 @@ const HomeNavigator = () => {
             ),
             headerRight: () => (
               <View style={styles.headerRight}>
-                <Text>Name</Text>
+                <Text>{currentUser?.name}</Text>
                 <IconUser />
                 {!isOpenMenu ? (
                   <TouchableOpacity onPress={() => setOpenMenu(true)}>
@@ -197,7 +197,7 @@ const HomeNavigator = () => {
             ),
             headerRight: () => (
               <View style={styles.headerRight}>
-                <Text>Name</Text>
+                <Text>{currentUser?.name}</Text>
                 <IconUser />
                 {!isOpenMenu ? (
                   <TouchableOpacity onPress={() => setOpenMenu(true)}>
