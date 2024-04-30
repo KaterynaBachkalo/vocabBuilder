@@ -16,7 +16,7 @@ const Statistics = () => {
   return (
     <View style={styles.wrap}>
       <Text style={styles.title}>To study:</Text>
-      <Text style={styles.number}>{quantity.totalCount}</Text>
+      <Text style={styles.number}>{quantity?.totalCount}</Text>
     </View>
   );
 };

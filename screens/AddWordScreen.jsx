@@ -86,6 +86,7 @@ const AddWordScreen = () => {
               style={styles.input}
               onChangeText={setTextInputValue}
               value={selectedCategory}
+              defaultValue="Noun"
             />
             <TouchableOpacity
               style={styles.iconVector}

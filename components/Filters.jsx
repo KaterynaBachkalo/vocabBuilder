@@ -16,7 +16,7 @@ const windowWidth = Dimensions.get("window").width;
 
 const Filters = () => {
   const [isOpenDropdown, setOpenDropdown] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("");
 
   const {
     control,
@@ -65,7 +65,7 @@ const Filters = () => {
         <View style={{ position: "relative" }}>
           <Controller
             control={control}
-            render={({ field: { onChange, onBlur } }) => (
+            render={({ field: { onChange, value, onBlur } }) => (
               <TextInput
                 style={styles.input}
                 onBlur={onBlur}
