@@ -1,22 +1,37 @@
-import React from "react";
-import { View, Text, StyleSheet, Dimensions } from "react-native";
+import React, { useEffect, useState } from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Dimensions,
+  TouchableOpacity,
+} from "react-native";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchWordsCategories } from "../redux/words/operations";
+import { selectWords } from "../redux/words/selectors";
 
 const windowWidth = Dimensions.get("window").width;
 
 const DropDown = () => {
+  const dispatch = useDispatch();
+  const categories = useSelector(selectWords);
+  const [selectedCategory, setSelectedCategory] = useState("");
+
+  useEffect(() => {
+    dispatch(fetchWordsCategories());
+  }, []);
+
   return (
     <View style={styles.container}>
-      <Text>Verb</Text>
-      <Text>Participle</Text>
-      <Text>Noun</Text>
-      <Text>Adjective</Text>
-      <Text>Pronoun</Text>
-      <Text>Numerals</Text>
-      <Text>Adverb</Text>
-      <Text>Preposition</Text>
-      <Text>Conjuction</Text>
-      <Text>Phrasal verb</Text>
-      <Text>Functional phrase</Text>
+      {categories.lenght !== 0 &&
+        categories.map((category) => (
+          <TouchableOpacity
+            key={category}
+            onPress={() => setSelectedCategory(category)}
+          >
+            <Text style={styles.text}>{category}</Text>
+          </TouchableOpacity>
+        ))}
     </View>
   );
 };
@@ -42,5 +57,10 @@ const styles = StyleSheet.create({
     },
     shadowOpacity: 0.08,
     elevation: 2,
+  },
+  text: {
+    fontFamily: "MacPawFixelDisplay_500",
+    fontSize: 16,
+    lineHeight: 24,
   },
 });

@@ -13,9 +13,13 @@ import { useNavigation } from "@react-navigation/native";
 import IconOff from "../images/icons/icon-off.svg";
 import IconOn from "../images/icons/icon-on.svg";
 import IconError from "../images/icons/error.svg";
+import { useDispatch } from "react-redux";
+import { registerThunk } from "../redux/auth/operations";
 
 const RegisterForm = () => {
   const navigation = useNavigation();
+  const dispatch = useDispatch();
+
   const [focusedInput, setFocusedInput] = useState(null);
   const [eyeOff, setEyeOff] = useState(true);
 
@@ -47,6 +51,12 @@ const RegisterForm = () => {
 
   const onSubmit = (data) => {
     console.log(data);
+    try {
+      dispatch(registerThunk(data));
+      navigation.navigate("LoginScreen");
+    } catch (error) {
+      console.log(error);
+    }
     reset();
   };
 

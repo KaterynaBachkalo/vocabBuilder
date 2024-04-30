@@ -1,13 +1,12 @@
 import "react-native-gesture-handler";
 import { useFonts } from "expo-font";
-import HomeNavigator from "./components/HomeNavigator";
-import AuthNavigator from "./components/AuthNavigator";
-import { useState } from "react";
+import AppNavigation from "./components/AppNavigation";
+import { PersistGate } from "redux-persist/integration/react";
+import { Provider } from "react-redux";
+import { store, persistor } from "./redux/store";
+import { Text } from "react-native";
 
 const App = () => {
-  // const isAuth = useSelector(selectIsAuth);
-  const [isAuth, setIsAuth] = useState(true);
-
   const [fontsLoaded] = useFonts({
     MacPawFixelDisplay_400: require("./assets/fonts/FixelDisplay-Regular.ttf"),
     MacPawFixelDisplay_500: require("./assets/fonts/FixelDisplay-Medium.ttf"),
@@ -19,7 +18,13 @@ const App = () => {
     return null;
   }
 
-  return isAuth ? <HomeNavigator /> : <AuthNavigator />;
+  return (
+    <Provider store={store}>
+      <PersistGate loading={<Text>Loading...</Text>} persistor={persistor}>
+        <AppNavigation />
+      </PersistGate>
+    </Provider>
+  );
 };
 
 export default App;
