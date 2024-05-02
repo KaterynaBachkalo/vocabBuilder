@@ -24,7 +24,7 @@ export const createWord = createAsyncThunk(
         category,
         isIrregular,
       });
-
+      console.log(response.data);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -55,7 +55,7 @@ export const editWord = createAsyncThunk(
         category,
         isIrregular,
       });
-
+      console.log("editWord", response.data);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
@@ -68,7 +68,7 @@ export const fetchAllWords = createAsyncThunk(
   async (_, thunkAPI) => {
     try {
       const response = await vocabBuilderInstance.get("/words/all");
-
+      //   console.log(response.data);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);

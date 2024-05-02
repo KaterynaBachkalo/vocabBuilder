@@ -16,23 +16,33 @@ import IconUkr from "../images/icons/ukr.svg";
 import IconEng from "../images/icons/eng.svg";
 import RadioButtons from "../components/RadioButtons";
 import DropDown from "../components/DropDown";
+import { useDispatch } from "react-redux";
+import { createWord } from "../redux/words/operations";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
 const AddWordScreen = () => {
   const [isOpenDropdown, setOpenDropdown] = useState(false);
-  const [inputValue, setInputValue] = useState("");
   const [radioValue, setRadioValue] = useState("regular");
-  const [textInputValue, setTextInputValue] = useState("");
+  const [inputUkrainianValue, setInputUkrainianValue] = useState("");
+  const [inputEnglishValue, setInputEnglishValue] = useState("");
   const [visible, setVisible] = useState(true);
-  const [selectedCategory, setSelectedCategory] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState("Noun");
 
   const navigation = useNavigation();
+  const dispatch = useDispatch();
 
   const onClose = () => {
     setVisible(false);
     navigation.navigate("DictionaryScreen");
+  };
+
+  const reset = () => {
+    setSelectedCategory("");
+    setRadioValue("");
+    setInputUkrainianValue("");
+    setInputEnglishValue("");
   };
 
   const handleSelectCategory = (selected) => {
@@ -42,21 +52,26 @@ const AddWordScreen = () => {
 
   const handleAdd = () => {
     // Логіка для додавання
-    console.log("Added:", inputValue, radioValue, textInputValue);
+    const data = {
+      en: inputEnglishValue,
+      ua: inputUkrainianValue,
+      category: selectedCategory,
+      isIrregular:
+        selectedCategory === "Verb" && radioValue === "irregular"
+          ? true
+          : false,
+    };
+
+    dispatch(createWord(data));
     // Скидання значень після додавання
-    setInputValue("");
-    setRadioValue("");
-    setTextInputValue("");
+    reset();
     // Закриття поп-апа
     onClose();
   };
 
   const handleCancel = () => {
-    // Скидання значень при скасуванні
-    setInputValue("");
-    setRadioValue("");
-    setTextInputValue("");
-    // Закриття поп-апа
+    reset();
+
     onClose();
   };
 
@@ -82,11 +97,11 @@ const AddWordScreen = () => {
           </Text>
 
           <View style={{ position: "relative" }}>
+            {/* Вибір частини мови */}
             <TextInput
               style={styles.input}
-              onChangeText={setTextInputValue}
+              onChangeText={setSelectedCategory}
               value={selectedCategory}
-              defaultValue="Noun"
             />
             <TouchableOpacity
               style={styles.iconVector}
@@ -125,10 +140,12 @@ const AddWordScreen = () => {
                 <IconUkr />
                 <Text style={styles.label}>Ukrainian</Text>
               </View>
+
+              {/* Ukrainian */}
               <TextInput
                 style={styles.input}
-                value={textInputValue}
-                onChangeText={setTextInputValue}
+                value={inputUkrainianValue}
+                onChangeText={setInputUkrainianValue}
               />
             </View>
 
@@ -144,10 +161,12 @@ const AddWordScreen = () => {
                 <IconEng />
                 <Text style={styles.label}>English</Text>
               </View>
+
+              {/* English */}
               <TextInput
                 style={styles.input}
-                value={textInputValue}
-                onChangeText={setTextInputValue}
+                value={inputEnglishValue}
+                onChangeText={setInputEnglishValue}
               />
             </View>
           </View>

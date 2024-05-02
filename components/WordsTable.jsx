@@ -1,38 +1,60 @@
-import React, { Component } from "react";
-import { StyleSheet, View, Text, TouchableOpacity, Alert } from "react-native";
-import { ScrollView } from "react-native-gesture-handler";
+import React, { Component, useEffect } from "react";
 import {
-  Table,
-  TableWrapper,
-  Row,
-  Cell,
-  Col,
-  Cols,
-} from "react-native-table-component";
+  StyleSheet,
+  View,
+  Text,
+  TouchableOpacity,
+  ScrollView,
+  TouchableWithoutFeedback,
+  Alert,
+} from "react-native";
+import { Table, Row } from "react-native-table-component";
+import { vocabBuilderInstance } from "../redux/auth/operations";
+import EditDropdown from "./EditDropdown";
 
 export default class WordsTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
       tableHead: ["Words", "Translation", "Progress", ""],
-      tableData: [
-        ["1", "2", "3", ""],
-        ["a", "b", "c", ""],
-        ["1", "2", "3", ""],
-        ["a", "b", "c", ""],
-      ],
+      tableData: [["", "", "", ""]],
       widthArr: [82, 116, 95, 50],
+      dropdownOpen: Array(1).fill(false),
+      fullData: {},
     };
   }
 
-  _alertIndex(index) {
-    Alert.alert(`This is row ${index + 1}`);
+  async componentDidMount() {
+    const { data } = await vocabBuilderInstance.get("/words/all");
+    // const { data } = await vocabBuilderInstance.get("/words/own");
+
+    const tableData = data.results.map(({ en, ua }) => [en, ua, "", ""]);
+    const fullData = data.results;
+    this.setState({ tableData });
+    this.setState({ fullData });
+  }
+
+  _alertIndex(index, id) {
+    Alert.alert(`This is row ${index + 1}, id ${id}`);
+
+    // this.setState((prevState) => {
+    //   const dropdownOpen = [...prevState.dropdownOpen];
+    //   dropdownOpen[index] = !dropdownOpen[index];
+    //   return { dropdownOpen, id };
+    // });
+  }
+
+  _handleOutsidePress() {
+    this.setState({
+      dropdownOpen: Array(this.state.dropdownOpen.length).fill(false),
+    });
   }
 
   render() {
+    const { dropdownOpen } = this.state;
     const state = this.state;
-    const element = (data, index) => (
-      <TouchableOpacity onPress={() => this._alertIndex(index)}>
+    const element = (data, index, id) => (
+      <TouchableOpacity onPress={() => this._alertIndex(index, id)}>
         <View style={styles.btn}>
           <Text style={styles.btnText}>...</Text>
         </View>
@@ -54,17 +76,35 @@ export default class WordsTable extends Component {
               widthArr={state.widthArr}
             />
             {state.tableData.map((rowData, index) => (
-              <Row
-                key={index}
-                data={rowData.map((cellData, cellIndex) =>
-                  cellIndex === rowData.length - 1
-                    ? element(cellData, index)
-                    : cellData
-                )}
-                style={styles.row}
-                textStyle={styles.cell}
-                widthArr={state.widthArr}
-              />
+              <React.Fragment key={index}>
+                {/* <TouchableWithoutFeedback
+                  onPress={() => this._handleOutsidePress()}
+                > */}
+                <View style={{ position: "relative" }}>
+                  <Row
+                    key={index}
+                    data={rowData.map((cellData, cellIndex) =>
+                      cellIndex === rowData.length - 1
+                        ? element(cellData, index, rowData._id)
+                        : cellData
+                    )}
+                    style={styles.row}
+                    textStyle={styles.cell}
+                    widthArr={state.widthArr}
+                  />
+
+                  {dropdownOpen[index] &&
+                    state.fullData.map((dataItem) => (
+                      <EditDropdown
+                        key={dataItem._id}
+                        onClose={() => this._alertIndex(index, dataItem._id)}
+                        data={dataItem}
+                        id={dataItem._id}
+                      />
+                    ))}
+                </View>
+                {/* </TouchableWithoutFeedback> */}
+              </React.Fragment>
             ))}
           </Table>
         </ScrollView>
