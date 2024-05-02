@@ -9,15 +9,20 @@ import {
   Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
+import { useDispatch } from "react-redux";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
 
 import IconCross from "../images/icons/cross.svg";
 import IconVectorWhite from "../images/icons/vector-white.svg";
 import IconUkr from "../images/icons/ukr.svg";
 import IconEng from "../images/icons/eng.svg";
+import IconError from "../images/icons/error.svg";
+
 import RadioButtons from "../components/RadioButtons";
 import DropDown from "../components/DropDown";
-import { useDispatch } from "react-redux";
 import { createWord } from "../redux/words/operations";
+import { Controller, useForm } from "react-hook-form";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -29,6 +34,28 @@ const AddWordScreen = () => {
   const [inputEnglishValue, setInputEnglishValue] = useState("");
   const [visible, setVisible] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("Noun");
+  const [focusedInput, setFocusedInput] = useState(null);
+
+  const Schema = Yup.object().shape({
+    ua: Yup.string().matches(
+      /^(?![A-Za-z])[А-ЯІЄЇҐґа-яієїʼ\s]+$/,
+      "Please enter valid value"
+    ),
+
+    en: Yup.string().matches(
+      /\b[A-Za-z'-]+(?:\s+[A-Za-z'-]+)*\b/,
+      "Please enter valid value"
+    ),
+  });
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(Schema),
+  });
 
   const navigation = useNavigation();
   const dispatch = useDispatch();
@@ -38,30 +65,28 @@ const AddWordScreen = () => {
     navigation.navigate("DictionaryScreen");
   };
 
-  const reset = () => {
-    setSelectedCategory("");
-    setRadioValue("");
-    setInputUkrainianValue("");
-    setInputEnglishValue("");
-  };
+  // const resetFields = () => {
+  //   setSelectedCategory("");
+  //   setRadioValue("");
+  // };
 
   const handleSelectCategory = (selected) => {
     setSelectedCategory(selected);
     setOpenDropdown(false);
   };
 
-  const handleAdd = () => {
+  const handleAdd = (value) => {
     // Логіка для додавання
     const data = {
-      en: inputEnglishValue,
-      ua: inputUkrainianValue,
+      en: value.en,
+      ua: value.ukr,
       category: selectedCategory,
       isIrregular:
         selectedCategory === "Verb" && radioValue === "irregular"
           ? true
           : false,
     };
-
+    console.log(data);
     dispatch(createWord(data));
     // Скидання значень після додавання
     reset();
@@ -142,11 +167,38 @@ const AddWordScreen = () => {
               </View>
 
               {/* Ukrainian */}
-              <TextInput
-                style={styles.input}
-                value={inputUkrainianValue}
-                onChangeText={setInputUkrainianValue}
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    style={[
+                      styles.input,
+                      focusedInput === "ua" && styles.focusedInput,
+                      errors.ukr && styles.errorInput,
+                    ]}
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={() => setFocusedInput(false)}
+                    onFocus={() => setFocusedInput("ua")}
+                    defaultValue=""
+                  />
+                )}
+                name="ua"
+                // rules={{ required: true }}
+                defaultValue=""
               />
+              {errors.ua && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 4,
+                  }}
+                >
+                  <IconError />
+                  <Text style={styles.errorMessage}>{errors.ua.message}</Text>
+                </View>
+              )}
             </View>
 
             <View>
@@ -163,21 +215,50 @@ const AddWordScreen = () => {
               </View>
 
               {/* English */}
-              <TextInput
-                style={styles.input}
-                value={inputEnglishValue}
-                onChangeText={setInputEnglishValue}
+              <Controller
+                control={control}
+                render={({ field: { onChange, value } }) => (
+                  <TextInput
+                    style={[
+                      styles.input,
+                      focusedInput === "en" && styles.focusedInput,
+                      errors.en && styles.errorInput,
+                    ]}
+                    value={value}
+                    onChangeText={onChange}
+                    onBlur={() => setFocusedInput(false)}
+                    onFocus={() => setFocusedInput("en")}
+                  />
+                )}
+                name="en"
+                // rules={{ required: true }}
+                defaultValue=""
               />
+              {errors.en && (
+                <View
+                  style={{
+                    flexDirection: "row",
+                    alignItems: "center",
+                    gap: 4,
+                  }}
+                >
+                  <IconError />
+                  <Text style={styles.errorMessage}>{errors.en.message}</Text>
+                </View>
+              )}
             </View>
           </View>
 
           <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.addButton} onPress={handleAdd}>
+            <TouchableOpacity
+              style={styles.addButton}
+              onPress={handleSubmit(handleAdd)}
+            >
               <Text style={{ textAlign: "center" }}>Add</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.cancelButton}
-              onPress={handleCancel}
+              onPress={handleSubmit(handleCancel)}
             >
               <Text style={{ textAlign: "center" }}>Cancel</Text>
             </TouchableOpacity>
@@ -198,6 +279,19 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(18, 20, 23, 0.2)",
     padding: 16,
     height: windowHeight - 32,
+  },
+  errorMessage: {
+    color: "#D80027",
+    fontSize: 12,
+    display: "flex",
+    gap: 10,
+    alignItems: "center",
+  },
+  errorInput: {
+    borderColor: "#D80027",
+  },
+  focusedInput: {
+    borderColor: "rgba(18, 20, 23, 0.2)",
   },
   popup: {
     backgroundColor: "rgb(133, 170, 159)",

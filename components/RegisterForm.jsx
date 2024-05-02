@@ -50,7 +50,6 @@ const RegisterForm = () => {
   });
 
   const onSubmit = (data) => {
-    console.log(data);
     try {
       dispatch(registerThunk(data));
       navigation.navigate("LoginScreen");

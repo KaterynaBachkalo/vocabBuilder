@@ -35,13 +35,14 @@ export default class WordsTable extends Component {
   }
 
   _alertIndex(index, id) {
+    console.log(id);
+    this.setState((prevState) => {
+      const dropdownOpen = [...prevState.dropdownOpen];
+      dropdownOpen[index] = !dropdownOpen[index];
+      console.log(dropdownOpen);
+      return { dropdownOpen };
+    });
     Alert.alert(`This is row ${index + 1}, id ${id}`);
-
-    // this.setState((prevState) => {
-    //   const dropdownOpen = [...prevState.dropdownOpen];
-    //   dropdownOpen[index] = !dropdownOpen[index];
-    //   return { dropdownOpen, id };
-    // });
   }
 
   _handleOutsidePress() {
@@ -53,8 +54,8 @@ export default class WordsTable extends Component {
   render() {
     const { dropdownOpen } = this.state;
     const state = this.state;
-    const element = (data, index, id) => (
-      <TouchableOpacity onPress={() => this._alertIndex(index, id)}>
+    const element = (data, index) => (
+      <TouchableOpacity onPress={() => this._alertIndex(index)}>
         <View style={styles.btn}>
           <Text style={styles.btnText}>...</Text>
         </View>
@@ -77,15 +78,12 @@ export default class WordsTable extends Component {
             />
             {state.tableData.map((rowData, index) => (
               <React.Fragment key={index}>
-                {/* <TouchableWithoutFeedback
-                  onPress={() => this._handleOutsidePress()}
-                > */}
                 <View style={{ position: "relative" }}>
                   <Row
                     key={index}
                     data={rowData.map((cellData, cellIndex) =>
                       cellIndex === rowData.length - 1
-                        ? element(cellData, index, rowData._id)
+                        ? element(cellData, index, state.fullData[index]?._id)
                         : cellData
                     )}
                     style={styles.row}
@@ -94,6 +92,7 @@ export default class WordsTable extends Component {
                   />
 
                   {dropdownOpen[index] &&
+                    state.fullData.length !== 0 &&
                     state.fullData.map((dataItem) => (
                       <EditDropdown
                         key={dataItem._id}
@@ -103,7 +102,6 @@ export default class WordsTable extends Component {
                       />
                     ))}
                 </View>
-                {/* </TouchableWithoutFeedback> */}
               </React.Fragment>
             ))}
           </Table>

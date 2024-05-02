@@ -8,8 +8,14 @@ import {
   TouchableOpacity,
 } from "react-native";
 import Modal from "react-native-modal";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as Yup from "yup";
+import { Controller, useForm } from "react-hook-form";
+
 import IconUkr from "../images/icons/ukr.svg";
 import IconEng from "../images/icons/eng.svg";
+import IconError from "../images/icons/error.svg";
+
 import { useDispatch } from "react-redux";
 import { editWord, fetchAllWords } from "../redux/words/operations";
 import { vocabBuilderInstance } from "../redux/auth/operations";
@@ -22,6 +28,27 @@ function EditWordModal({ onClose, data, id }) {
   const [isModalVisible, setModalVisible] = useState(true);
   const [inputUkrainianValue, setInputUkrainianValue] = useState("");
   const [inputEnglishValue, setInputEnglishValue] = useState("");
+  const [focusedInput, setFocusedInput] = useState(null);
+
+  const Schema = Yup.object().shape({
+    ua: Yup.string().matches(
+      /^(?![A-Za-z])[А-ЯІЄЇҐґа-яієїʼ\s]+$/,
+      "Please enter valid value"
+    ),
+    en: Yup.string().matches(
+      /\b[A-Za-z'-]+(?:\s+[A-Za-z'-]+)*\b/,
+      "Please enter valid value"
+    ),
+  });
+
+  const {
+    control,
+    handleSubmit,
+    formState: { errors },
+    reset,
+  } = useForm({
+    resolver: yupResolver(Schema),
+  });
 
   const dispatch = useDispatch();
 
@@ -33,20 +60,20 @@ function EditWordModal({ onClose, data, id }) {
     setInputEnglishValue(data.en);
   };
 
-  const reset = () => {
-    setInputUkrainianValue("");
-    setInputEnglishValue("");
-  };
+  // const reset = () => {
+  //   setInputUkrainianValue("");
+  //   setInputEnglishValue("");
+  // };
 
   useEffect(() => {
     setUkrWordIntoInput();
     setEngWordIntoInput();
   }, []);
 
-  const handleSave = () => {
+  const handleSave = (value) => {
     const newData = {
-      en: inputEnglishValue,
-      ua: inputUkrainianValue,
+      en: value.en,
+      ua: value.ua,
       category: data.category,
       isIrregular: data.isIrregular,
     };
@@ -87,11 +114,38 @@ function EditWordModal({ onClose, data, id }) {
                   <Text style={styles.label}>Ukrainian</Text>
                 </View>
                 {/* Ukrainian */}
-                <TextInput
-                  style={styles.input}
-                  value={inputUkrainianValue}
-                  onChangeText={setInputUkrainianValue}
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      style={[
+                        styles.input,
+                        focusedInput === "ua" && styles.focusedInput,
+                        errors.ukr && styles.errorInput,
+                      ]}
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={() => setFocusedInput(false)}
+                      onFocus={() => setFocusedInput("ua")}
+                      defaultValue=""
+                    />
+                  )}
+                  name="ua"
+                  // rules={{ required: true }}
+                  defaultValue=""
                 />
+                {errors.ua && (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
+                  >
+                    <IconError />
+                    <Text style={styles.errorMessage}>{errors.ua.message}</Text>
+                  </View>
+                )}
               </View>
               <View>
                 <View
@@ -107,20 +161,49 @@ function EditWordModal({ onClose, data, id }) {
                 </View>
 
                 {/* English */}
-                <TextInput
-                  style={styles.input}
-                  value={inputEnglishValue}
-                  onChangeText={setInputEnglishValue}
+                <Controller
+                  control={control}
+                  render={({ field: { onChange, value } }) => (
+                    <TextInput
+                      style={[
+                        styles.input,
+                        focusedInput === "en" && styles.focusedInput,
+                        errors.en && styles.errorInput,
+                      ]}
+                      value={value}
+                      onChangeText={onChange}
+                      onBlur={() => setFocusedInput(false)}
+                      onFocus={() => setFocusedInput("en")}
+                    />
+                  )}
+                  name="en"
+                  // rules={{ required: true }}
+                  defaultValue=""
                 />
+                {errors.en && (
+                  <View
+                    style={{
+                      flexDirection: "row",
+                      alignItems: "center",
+                      gap: 4,
+                    }}
+                  >
+                    <IconError />
+                    <Text style={styles.errorMessage}>{errors.en.message}</Text>
+                  </View>
+                )}
               </View>
             </View>
             <View style={styles.buttonContainer}>
-              <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+              <TouchableOpacity
+                style={styles.saveButton}
+                onPress={handleSubmit(handleSave)}
+              >
                 <Text style={{ textAlign: "center" }}>Save</Text>
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.cancelButton}
-                onPress={handleCancel}
+                onPress={handleSubmit(handleCancel)}
               >
                 <Text style={{ textAlign: "center" }}>Cancel</Text>
               </TouchableOpacity>
@@ -142,6 +225,19 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(18, 20, 23, 0.2)",
     padding: 16,
     height: windowHeight - 32,
+  },
+  errorMessage: {
+    color: "#D80027",
+    fontSize: 12,
+    display: "flex",
+    gap: 10,
+    alignItems: "center",
+  },
+  errorInput: {
+    borderColor: "#D80027",
+  },
+  focusedInput: {
+    borderColor: "rgba(18, 20, 23, 0.2)",
   },
   popup: {
     backgroundColor: "rgb(133, 170, 159)",
