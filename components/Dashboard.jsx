@@ -10,8 +10,7 @@ const Dashboard = () => {
   const [searchWord, setSearchWord] = useState("");
 
   const handleSearch = (searchWord) => {
-    console.log("Search word:", searchWord);
-    setSearchWord(searchWord); // Оновлення локального стану зі значенням пошукового слова
+    setSearchWord(searchWord);
   };
 
   return (

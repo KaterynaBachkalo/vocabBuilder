@@ -34,22 +34,40 @@ export default class WordsTable extends Component {
   }
 
   componentDidUpdate(prevProps, prevState) {
-    if (prevState.currentPage !== this.state.currentPage) {
+    if (
+      prevState.currentPage !== this.state.currentPage ||
+      prevProps.searchWord !== this.props.searchWord
+    ) {
       this.fetchData(this.state.currentPage);
     }
   }
 
   fetchData = async (page) => {
-    const { data } = await vocabBuilderInstance.get(`/words/all?page=${page}`);
-    // console.log(data.results);
-    // const { data } = await vocabBuilderInstance.get("/words/own");
+    if (this.props.searchWord) {
+      const searchData = this.props.searchWord.map(({ en, ua }) => [
+        en,
+        ua,
+        "",
+        "",
+      ]);
+      // console.log("prop", this.props.searchWord);
+      // console.log("searchData", searchData);
 
-    const tableData = data.results.map(({ en, ua }) => [en, ua, "", ""]);
-    const fullData = data.results;
-    // console.log(data.totalPages);
-    this.setState({ tableData });
-    this.setState({ fullData });
-    this.setState({ totalPages: data.totalPages });
+      this.setState({ tableData: searchData });
+
+      // console.log(this.state.tableData);
+    } else {
+      const { data } = await vocabBuilderInstance.get(
+        `/words/all?page=${page}`
+      );
+
+      const tableData = data.results.map(({ en, ua }) => [en, ua, "", ""]);
+      const fullData = data.results;
+
+      this.setState({ tableData });
+      this.setState({ fullData });
+      this.setState({ totalPages: data.totalPages });
+    }
   };
 
   _alertIndex(index, id) {
@@ -93,8 +111,6 @@ export default class WordsTable extends Component {
   };
 
   render() {
-    console.log("Search word in WordsTable:", this.props.searchWord);
-
     const { dropdownOpen } = this.state;
     const state = this.state;
     const element = (data, index) => (
@@ -131,7 +147,18 @@ export default class WordsTable extends Component {
                           : cellData
                       )}
                       style={styles.row}
-                      textStyle={styles.cell}
+                      textStyle={{
+                        fontFamily: "MacPawFixelDisplay_500",
+                        fontSize: 14,
+                        lineHeight: 19,
+                        textAlign: "left",
+                        borderRightWidth: 1,
+                        borderRightColor: "rgb(219, 219, 219)",
+                        paddingVertical: 16,
+                        paddingLeft: 14,
+                        paddingRight: 10,
+                        color: "rgb(18, 20, 23)",
+                      }}
                       widthArr={state.widthArr}
                     />
 
@@ -184,18 +211,7 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRightWidth: 1,
   },
-  cell: {
-    fontFamily: "MacPawFixelDisplay_500",
-    fontSize: 14,
-    lineHeight: 19,
-    textAlign: "left",
-    borderRightWidth: 1,
-    borderRightColor: "rgb(219, 219, 219)",
-    paddingVertical: 16,
-    paddingLeft: 14,
-    paddingRight: 10,
-    color: "rgb(18, 20, 23)",
-  },
+
   row: {
     flexDirection: "row",
     backgroundColor: "rgb(252, 252, 252)",

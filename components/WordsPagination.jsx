@@ -15,14 +15,15 @@ const WordsPagination = ({
 }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity onPress={firstPage}>
-        <IconFirstPage />
-      </TouchableOpacity>
-
       {currentPage !== 1 && (
-        <TouchableOpacity onPress={prevPage}>
-          <IconPrevPage />
-        </TouchableOpacity>
+        <>
+          <TouchableOpacity onPress={firstPage}>
+            <IconFirstPage />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={prevPage}>
+            <IconPrevPage />
+          </TouchableOpacity>
+        </>
       )}
 
       {currentPage - 1 !== 0 && (

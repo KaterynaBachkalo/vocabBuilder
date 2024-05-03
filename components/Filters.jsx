@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   StyleSheet,
   TextInput,
@@ -48,10 +48,28 @@ const Filters = ({ onSearch }) => {
     onSearch(searchFilter);
   };
 
+  const onSelectedCategory = async (selectedCategory) => {
+    const { data } = await vocabBuilderInstance.get(`/words/all`);
+
+    console.log("SelectedCategory", data.results);
+
+    const searchFilter = data.results.filter((item) =>
+      item.category.toLowerCase().includes(selectedCategory.toLowerCase())
+    );
+
+    console.log("searchFilter", searchFilter);
+
+    onSearch(searchFilter);
+  };
+
   const handleSelectCategory = (selected) => {
     setSelectedCategory(selected);
     setOpenDropdown(false);
   };
+
+  useEffect(() => {
+    onSelectedCategory(selectedCategory);
+  }, [selectedCategory]);
 
   return (
     <View style={{ gap: 14, width: "100%" }}>
@@ -85,6 +103,7 @@ const Filters = ({ onSearch }) => {
                 style={styles.input}
                 onBlur={onBlur}
                 onChangeText={onChange}
+                // onSelectionChange={() => onSelectedCategory(selectedCategory)}
                 value={selectedCategory}
                 placeholder="Categories"
               />
