@@ -71,25 +71,37 @@ function EditWordModal({ onClose, data, id }) {
   }, []);
 
   const handleSave = (value) => {
-    const newData = {
-      en: value.en,
-      ua: value.ua,
-      category: data.category,
-      isIrregular: data.isIrregular,
-    };
-    console.log("newData", newData);
-    const id = data._id;
-    dispatch(editWord(id, newData));
-    // Скидання значень після додавання
-    reset();
-    // Закриття поп-апа
-    onClose();
+    try {
+      const newData = {
+        en: value.en,
+        ua: value.ua,
+        category: data.category,
+        isIrregular: data.isIrregular,
+      };
+      console.log("newData", newData);
+
+      dispatch(editWord(id, newData));
+      // Скидання значень після додавання
+      reset();
+      // Закриття поп-апа
+      onClose();
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const handleCancel = () => {
     reset();
 
     onClose();
+  };
+
+  const handleChangeUkrText = (text) => {
+    setInputUkrainianValue(text);
+  };
+
+  const handleChangeEngText = (text) => {
+    setInputEnglishValue(text);
   };
 
   return (
@@ -123,16 +135,15 @@ function EditWordModal({ onClose, data, id }) {
                         focusedInput === "ua" && styles.focusedInput,
                         errors.ua && styles.errorInput,
                       ]}
-                      value={value}
-                      onChangeText={onChange}
+                      value={inputUkrainianValue}
+                      onChangeText={handleChangeUkrText}
                       onBlur={() => setFocusedInput(false)}
                       onFocus={() => setFocusedInput("ua")}
-                      defaultValue=""
                     />
                   )}
                   name="ua"
                   // rules={{ required: true }}
-                  defaultValue=""
+                  defaultValue={data.ua}
                 />
                 {errors.ua && (
                   <View
@@ -170,15 +181,15 @@ function EditWordModal({ onClose, data, id }) {
                         focusedInput === "en" && styles.focusedInput,
                         errors.en && styles.errorInput,
                       ]}
-                      value={value}
-                      onChangeText={onChange}
+                      value={inputEnglishValue}
+                      onChangeText={handleChangeEngText}
                       onBlur={() => setFocusedInput(false)}
                       onFocus={() => setFocusedInput("en")}
                     />
                   )}
                   name="en"
                   // rules={{ required: true }}
-                  defaultValue=""
+                  defaultValue={data.en}
                 />
                 {errors.en && (
                   <View

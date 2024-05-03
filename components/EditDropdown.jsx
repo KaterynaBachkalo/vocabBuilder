@@ -6,20 +6,22 @@ import IconDelete from "../images/icons/delete.svg";
 import EditWordModal from "./EditWordModal";
 
 const EditDropdown = ({ onClose, data, id }) => {
+  // console.log(id, data);
+
   const [isOpenEditWordModal, setOpenEditWordModal] = useState(false);
 
-  const handleEdit = () => {
+  const handleEdit = (id) => {
     setOpenEditWordModal(true);
   };
 
-  const handleDelete = () => {
+  const handleDelete = (id) => {
     onClose();
   };
 
   return (
     <>
       <View style={styles.container}>
-        <TouchableOpacity onPress={handleEdit} style={styles.button}>
+        <TouchableOpacity onPress={() => handleEdit(id)} style={styles.button}>
           <IconEdit />
           <Text style={styles.title}>Edit</Text>
         </TouchableOpacity>

@@ -24,6 +24,8 @@ export default class WordsTable extends Component {
       fullData: {},
       currentPage: 1,
       totalPages: "",
+      id: null,
+      selectedRowIndex: null,
     };
   }
 
@@ -43,29 +45,30 @@ export default class WordsTable extends Component {
   }
 
   fetchData = async (page) => {
-    // if (this.props.searchWord !== "") {
-    //   console.log(this.props.searchWord);
-    //   console.log(1);
-    //   const searchData = this.props.searchWord.map(({ en, ua }) => [
-    //     en,
-    //     ua,
-    //     "",
-    //     "",
-    //   ]);
-    //   // console.log("prop", this.props.searchWord);
-    //   // console.log("searchData", searchData);
-    //   this.setState({ tableData: searchData });
-    //   this.setState({ currentPage: 1 });
-    //   // console.log(this.state.tableData);
-    // } else {
-    console.log(2);
-    const { data } = await vocabBuilderInstance.get(`/words/all?page=${page}`);
-    const tableData = data.results.map(({ en, ua }) => [en, ua, "", ""]);
-    const fullData = data.results;
-    this.setState({ tableData });
-    this.setState({ fullData });
-    this.setState({ totalPages: data.totalPages });
-    // }
+    if (this.props.searchWord.length !== 0) {
+      // console.log(1);
+      const searchData = this.props.searchWord.map(({ en, ua }) => [
+        en,
+        ua,
+        "",
+        "",
+      ]);
+      // console.log("prop", this.props.searchWord);
+      // console.log("searchData", searchData);
+      this.setState({ tableData: searchData });
+      this.setState({ currentPage: 1 });
+      // console.log(this.state.tableData);
+    } else {
+      // console.log(2);
+      const { data } = await vocabBuilderInstance.get(
+        `/words/all?page=${page}`
+      );
+      const tableData = data.results.map(({ en, ua }) => [en, ua, "", ""]);
+      const fullData = data.results;
+      this.setState({ tableData });
+      this.setState({ fullData });
+      this.setState({ totalPages: data.totalPages });
+    }
   };
 
   _alertIndex(index, id) {
@@ -73,9 +76,10 @@ export default class WordsTable extends Component {
       const dropdownOpen = [...prevState.dropdownOpen];
       dropdownOpen[index] = !dropdownOpen[index];
 
-      return { dropdownOpen };
+      return { dropdownOpen, selectedRowIndex: index };
     });
-    Alert.alert(`This is row ${index + 1}, id ${id}`);
+
+    this.setState({ id });
   }
 
   _handleOutsidePress() {
@@ -111,8 +115,8 @@ export default class WordsTable extends Component {
   render() {
     const { dropdownOpen } = this.state;
     const state = this.state;
-    const element = (data, index) => (
-      <TouchableOpacity onPress={() => this._alertIndex(index)}>
+    const element = (data, index, id) => (
+      <TouchableOpacity onPress={() => this._alertIndex(index, id)}>
         <View style={styles.btn}>
           <Text style={styles.btnText}>...</Text>
         </View>
@@ -160,7 +164,7 @@ export default class WordsTable extends Component {
                       widthArr={state.widthArr}
                     />
 
-                    {dropdownOpen[index] &&
+                    {/* {dropdownOpen[index] &&
                       state.fullData.length !== 0 &&
                       state.fullData.map((dataItem) => (
                         <EditDropdown
@@ -169,6 +173,24 @@ export default class WordsTable extends Component {
                           data={dataItem}
                           id={dataItem._id}
                         />
+                      ))} */}
+
+                    {dropdownOpen[index] &&
+                      state.fullData.length !== 0 &&
+                      state.fullData.map((dataItem, dataIndex) => (
+                        <React.Fragment key={dataItem._id}>
+                          {dropdownOpen[index] &&
+                            state.selectedRowIndex === dataIndex && ( // Перевірка на відображення для вибраного рядка
+                              <EditDropdown
+                                key={dataItem._id}
+                                onClose={() =>
+                                  this._alertIndex(index, dataItem._id)
+                                }
+                                data={dataItem}
+                                id={dataItem._id}
+                              />
+                            )}
+                        </React.Fragment>
                       ))}
                   </View>
                 </React.Fragment>

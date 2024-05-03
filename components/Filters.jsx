@@ -29,8 +29,7 @@ const Filters = ({ onSearch }) => {
   } = useForm();
 
   const handleSearchInputChange = (text) => {
-    const value = text;
-    setSearchValue(value);
+    setSearchValue(text);
   };
 
   const setChangeCategory = (selected) => {
@@ -43,20 +42,21 @@ const Filters = ({ onSearch }) => {
     const searchFilter = data.results.filter((item) =>
       item.en.toLowerCase().includes(searchValue.toLowerCase())
     );
+    // console.log(searchFilter);
 
-    onSearch(searchFilter);
+    if (searchFilter) {
+      onSearch(searchFilter);
+    } else {
+      onSearch(searchFilter == []);
+    }
   };
 
   const onSelectedCategory = async (selectedCategory, isIrregularValue) => {
-    // console.log("isIrregularValue", isIrregularValue);
-    // console.log("selectedCategory", selectedCategory);
-
     const { data } = await vocabBuilderInstance.get(`/words/all`);
 
     const filteredData = data.results.filter((item) => {
       if (selectedCategory === "Verb") {
         if (isIrregularValue) {
-          // console.log(1);
           return (
             item.category
               .toLowerCase()
@@ -64,15 +64,13 @@ const Filters = ({ onSearch }) => {
             item.isIrregular === isIrregularValue
           );
         } else {
-          // console.log(2);
-
           return item.category
             .toLowerCase()
             .includes(selectedCategory.toLowerCase());
         }
+      } else if (selectedCategory === "") {
+        onSearch((filteredData = []));
       } else {
-        // console.log(3);
-
         return item.category
           .toLowerCase()
           .includes(selectedCategory.toLowerCase());
@@ -81,10 +79,9 @@ const Filters = ({ onSearch }) => {
 
     if (!filteredData) {
       onSearch((filteredData = []));
+    } else {
+      onSearch(filteredData);
     }
-
-    // console.log(filteredData, isIrregularValue);
-    onSearch(filteredData);
   };
 
   const handleSelectCategory = (selected) => {
