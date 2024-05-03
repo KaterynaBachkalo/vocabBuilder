@@ -121,7 +121,7 @@ function EditWordModal({ onClose, data, id }) {
                       style={[
                         styles.input,
                         focusedInput === "ua" && styles.focusedInput,
-                        errors.ukr && styles.errorInput,
+                        errors.ua && styles.errorInput,
                       ]}
                       value={value}
                       onChangeText={onChange}
@@ -203,7 +203,7 @@ function EditWordModal({ onClose, data, id }) {
               </TouchableOpacity>
               <TouchableOpacity
                 style={styles.cancelButton}
-                onPress={handleSubmit(handleCancel)}
+                onPress={handleCancel}
               >
                 <Text style={{ textAlign: "center" }}>Cancel</Text>
               </TouchableOpacity>

@@ -11,6 +11,7 @@ import {
 import { Table, Row } from "react-native-table-component";
 import { vocabBuilderInstance } from "../redux/auth/operations";
 import EditDropdown from "./EditDropdown";
+import WordsPagination from "./WordsPagination";
 
 export default class WordsTable extends Component {
   constructor(props) {
@@ -21,25 +22,41 @@ export default class WordsTable extends Component {
       widthArr: [82, 116, 95, 50],
       dropdownOpen: Array(1).fill(false),
       fullData: {},
+      currentPage: 1,
+      totalPages: "",
     };
   }
 
-  async componentDidMount() {
-    const { data } = await vocabBuilderInstance.get("/words/all");
+  componentDidMount() {
+    if (this.state.currentPage === 1) {
+      this.fetchData(this.state.currentPage);
+    }
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevState.currentPage !== this.state.currentPage) {
+      this.fetchData(this.state.currentPage);
+    }
+  }
+
+  fetchData = async (page) => {
+    const { data } = await vocabBuilderInstance.get(`/words/all?page=${page}`);
+    // console.log(data.results);
     // const { data } = await vocabBuilderInstance.get("/words/own");
 
     const tableData = data.results.map(({ en, ua }) => [en, ua, "", ""]);
     const fullData = data.results;
+    // console.log(data.totalPages);
     this.setState({ tableData });
     this.setState({ fullData });
-  }
+    this.setState({ totalPages: data.totalPages });
+  };
 
   _alertIndex(index, id) {
-    console.log(id);
     this.setState((prevState) => {
       const dropdownOpen = [...prevState.dropdownOpen];
       dropdownOpen[index] = !dropdownOpen[index];
-      console.log(dropdownOpen);
+
       return { dropdownOpen };
     });
     Alert.alert(`This is row ${index + 1}, id ${id}`);
@@ -51,7 +68,33 @@ export default class WordsTable extends Component {
     });
   }
 
+  handleNextPage = () => {
+    this.setState((prevState) => ({
+      currentPage: prevState.currentPage + 1,
+    }));
+  };
+
+  handlePreviousPage = () => {
+    this.setState((prevState) => ({
+      currentPage: prevState.currentPage - 1,
+    }));
+  };
+
+  handleFirstPage = () => {
+    this.setState({
+      currentPage: 1,
+    });
+  };
+
+  handleLastPage = () => {
+    this.setState({
+      currentPage: this.state.totalPages,
+    });
+  };
+
   render() {
+    console.log("Search word in WordsTable:", this.props.searchWord);
+
     const { dropdownOpen } = this.state;
     const state = this.state;
     const element = (data, index) => (
@@ -63,50 +106,60 @@ export default class WordsTable extends Component {
     );
 
     return (
-      <View style={styles.container}>
-        <ScrollView horizontal={true}>
-          <Table
-            borderStyle={{
-              borderColor: "transparent",
-            }}
-          >
-            <Row
-              data={state.tableHead}
-              style={styles.head}
-              textStyle={styles.text}
-              widthArr={state.widthArr}
-            />
-            {state.tableData.map((rowData, index) => (
-              <React.Fragment key={index}>
-                <View style={{ position: "relative" }}>
-                  <Row
-                    key={index}
-                    data={rowData.map((cellData, cellIndex) =>
-                      cellIndex === rowData.length - 1
-                        ? element(cellData, index, state.fullData[index]?._id)
-                        : cellData
-                    )}
-                    style={styles.row}
-                    textStyle={styles.cell}
-                    widthArr={state.widthArr}
-                  />
+      <>
+        <View style={{ gap: 32 }}>
+          <ScrollView horizontal={true}>
+            <Table
+              borderStyle={{
+                borderColor: "transparent",
+              }}
+            >
+              <Row
+                data={state.tableHead}
+                style={styles.head}
+                textStyle={styles.text}
+                widthArr={state.widthArr}
+              />
+              {state.tableData.map((rowData, index) => (
+                <React.Fragment key={index}>
+                  <View style={{ position: "relative" }}>
+                    <Row
+                      key={index}
+                      data={rowData.map((cellData, cellIndex) =>
+                        cellIndex === rowData.length - 1
+                          ? element(cellData, index, state.fullData[index]?._id)
+                          : cellData
+                      )}
+                      style={styles.row}
+                      textStyle={styles.cell}
+                      widthArr={state.widthArr}
+                    />
 
-                  {dropdownOpen[index] &&
-                    state.fullData.length !== 0 &&
-                    state.fullData.map((dataItem) => (
-                      <EditDropdown
-                        key={dataItem._id}
-                        onClose={() => this._alertIndex(index, dataItem._id)}
-                        data={dataItem}
-                        id={dataItem._id}
-                      />
-                    ))}
-                </View>
-              </React.Fragment>
-            ))}
-          </Table>
-        </ScrollView>
-      </View>
+                    {dropdownOpen[index] &&
+                      state.fullData.length !== 0 &&
+                      state.fullData.map((dataItem) => (
+                        <EditDropdown
+                          key={dataItem._id}
+                          onClose={() => this._alertIndex(index, dataItem._id)}
+                          data={dataItem}
+                          id={dataItem._id}
+                        />
+                      ))}
+                  </View>
+                </React.Fragment>
+              ))}
+            </Table>
+          </ScrollView>
+          <WordsPagination
+            currentPage={this.state.currentPage}
+            prevPage={this.handlePreviousPage}
+            nextPage={this.handleNextPage}
+            totalPages={this.state.totalPages}
+            firstPage={this.handleFirstPage}
+            lastPage={this.handleLastPage}
+          />
+        </View>
+      </>
     );
   }
 }

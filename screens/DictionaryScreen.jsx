@@ -1,16 +1,12 @@
 import React from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import Dashboard from "../components/Dashboard";
-import WordsTable from "../components/WordsTable";
-import WordsPagination from "../components/WordsPagination";
 
 const DictionaryScreen = () => {
   return (
     <ScrollView>
       <View style={styles.container}>
         <Dashboard />
-        <WordsTable />
-        <WordsPagination />
       </View>
     </ScrollView>
   );

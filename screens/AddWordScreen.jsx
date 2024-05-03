@@ -51,8 +51,10 @@ const AddWordScreen = () => {
   const {
     control,
     handleSubmit,
+    clearErrors,
     formState: { errors },
     reset,
+    setValue,
   } = useForm({
     resolver: yupResolver(Schema),
   });
@@ -64,11 +66,6 @@ const AddWordScreen = () => {
     setVisible(false);
     navigation.navigate("DictionaryScreen");
   };
-
-  // const resetFields = () => {
-  //   setSelectedCategory("");
-  //   setRadioValue("");
-  // };
 
   const handleSelectCategory = (selected) => {
     setSelectedCategory(selected);
@@ -89,14 +86,23 @@ const AddWordScreen = () => {
     console.log(data);
     dispatch(createWord(data));
     // Скидання значень після додавання
-    reset();
+    // reset();
+    setRadioValue("");
     // Закриття поп-апа
     onClose();
   };
 
-  const handleCancel = () => {
-    reset();
+  const resetFields = () => {
+    setInputUkrainianValue("");
+    setInputEnglishValue("");
+    setRadioValue("regular");
+    setSelectedCategory("Noun");
+  };
 
+  const handleCancel = () => {
+    // resetFields();
+    // clearErrors();
+    reset();
     onClose();
   };
 
@@ -123,10 +129,18 @@ const AddWordScreen = () => {
 
           <View style={{ position: "relative" }}>
             {/* Вибір частини мови */}
-            <TextInput
-              style={styles.input}
-              onChangeText={setSelectedCategory}
-              value={selectedCategory}
+            <Controller
+              control={control}
+              render={({ field: { onChange, value } }) => (
+                <TextInput
+                  style={styles.input}
+                  onChangeText={onChange}
+                  value={selectedCategory}
+                />
+              )}
+              name="category"
+              // rules={{ required: true }}
+              defaultValue=""
             />
             <TouchableOpacity
               style={styles.iconVector}
@@ -174,7 +188,7 @@ const AddWordScreen = () => {
                     style={[
                       styles.input,
                       focusedInput === "ua" && styles.focusedInput,
-                      errors.ukr && styles.errorInput,
+                      errors.ua && styles.errorInput,
                     ]}
                     value={value}
                     onChangeText={onChange}
@@ -258,7 +272,7 @@ const AddWordScreen = () => {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.cancelButton}
-              onPress={handleSubmit(handleCancel)}
+              onPress={handleCancel}
             >
               <Text style={{ textAlign: "center" }}>Cancel</Text>
             </TouchableOpacity>

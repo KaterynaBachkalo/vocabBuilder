@@ -1,6 +1,6 @@
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import IconArrowRight from "../images/icons/arrow-right.svg";
+import IconArrowRight from "../images/icons/arrowRight.svg";
 import { useNavigation } from "@react-navigation/native";
 
 const TrainOneself = () => {

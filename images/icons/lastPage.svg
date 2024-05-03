@@ -1,0 +1,14 @@
+<svg width="32.000000" height="32.000000" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+
+	<defs>
+		<clipPath id="clip35_1167">
+			<rect id="Icon / Pagination / Last" width="16.000000" height="16.000000" transform="translate(8.000000 8.000000)" fill="white" fill-opacity="0"/>
+		</clipPath>
+	</defs>
+	<rect id="Icon / Pagination / Last" width="16.000000" height="16.000000" transform="translate(8.000000 8.000000)" fill="#FFFFFF" fill-opacity="0"/>
+	<g clip-path="url(#clip35_1167)">
+		<path id="Vector" d="M12.27 12L11.33 12.94L14.38 16L11.33 19.06L12.27 20L16.27 16L12.27 12Z" fill="#000000" fill-opacity="1.000000" fill-rule="nonzero"/>
+		<path id="Vector" d="M16.66 12L15.72 12.94L18.77 16L15.72 19.06L16.66 20L20.66 16L16.66 12Z" fill="#000000" fill-opacity="1.000000" fill-rule="nonzero"/>
+	</g>
+	<rect id="Control" rx="7.500000" width="31.000000" height="31.000000" transform="translate(0.500000 0.500000)" stroke="#121417" stroke-opacity="0.100000" stroke-width="1.000000"/>
+</svg>

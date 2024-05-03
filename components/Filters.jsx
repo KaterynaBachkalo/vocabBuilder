@@ -11,12 +11,18 @@ import IconVector from "../images/icons/vector.svg";
 import IconSearch from "../images/icons/search.svg";
 import DropDown from "./DropDown";
 import RadioButtons from "./RadioButtons";
+import { useDispatch } from "react-redux";
+import { fetchAllWords } from "../redux/words/operations";
+import { vocabBuilderInstance } from "../redux/auth/operations";
 
 const windowWidth = Dimensions.get("window").width;
 
-const Filters = () => {
+const Filters = ({ onSearch }) => {
   const [isOpenDropdown, setOpenDropdown] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
+  const [searchValue, setSearchValue] = useState("");
+
+  // const dispatch = useDispatch();
 
   const {
     control,
@@ -25,9 +31,21 @@ const Filters = () => {
     reset,
   } = useForm();
 
-  const onSubmit = (data) => {
-    console.log(data);
-    reset();
+  const handleSearchInputChange = (text) => {
+    const value = text;
+    setSearchValue(value);
+  };
+
+  const handleSearch = async () => {
+    const { data } = await vocabBuilderInstance.get(`/words/all`);
+
+    console.log("data", data.results);
+
+    const searchFilter = data.results.filter((item) =>
+      item.en.toLowerCase().includes(searchValue.toLowerCase())
+    );
+
+    onSearch(searchFilter);
   };
 
   const handleSelectCategory = (selected) => {
@@ -44,8 +62,8 @@ const Filters = () => {
             <TextInput
               style={styles.input}
               onBlur={onBlur}
-              onChangeText={onChange}
-              value={value}
+              onChangeText={handleSearchInputChange}
+              value={searchValue}
               placeholder="Find the word"
             />
           )}
@@ -53,10 +71,7 @@ const Filters = () => {
           rules={{ required: true }}
           defaultValue=""
         />
-        <TouchableOpacity
-          style={styles.iconSearch}
-          onPress={handleSubmit(onSubmit)}
-        >
+        <TouchableOpacity style={styles.iconSearch} onPress={handleSearch}>
           <IconSearch />
         </TouchableOpacity>
       </View>
