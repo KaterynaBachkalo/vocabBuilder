@@ -11,8 +11,6 @@ import IconVector from "../images/icons/vector.svg";
 import IconSearch from "../images/icons/search.svg";
 import DropDown from "./DropDown";
 import RadioButtons from "./RadioButtons";
-import { useDispatch } from "react-redux";
-import { fetchAllWords } from "../redux/words/operations";
 import { vocabBuilderInstance } from "../redux/auth/operations";
 
 const windowWidth = Dimensions.get("window").width;
@@ -21,8 +19,7 @@ const Filters = ({ onSearch }) => {
   const [isOpenDropdown, setOpenDropdown] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [searchValue, setSearchValue] = useState("");
-
-  // const dispatch = useDispatch();
+  const [isIrregularValue, setIrregularValue] = useState(false);
 
   const {
     control,
@@ -36,10 +33,12 @@ const Filters = ({ onSearch }) => {
     setSearchValue(value);
   };
 
+  const setChangeCategory = (selected) => {
+    setSelectedCategory(selected);
+  };
+
   const handleSearch = async () => {
     const { data } = await vocabBuilderInstance.get(`/words/all`);
-
-    console.log("data", data.results);
 
     const searchFilter = data.results.filter((item) =>
       item.en.toLowerCase().includes(searchValue.toLowerCase())
@@ -48,18 +47,44 @@ const Filters = ({ onSearch }) => {
     onSearch(searchFilter);
   };
 
-  const onSelectedCategory = async (selectedCategory) => {
+  const onSelectedCategory = async (selectedCategory, isIrregularValue) => {
+    // console.log("isIrregularValue", isIrregularValue);
+    // console.log("selectedCategory", selectedCategory);
+
     const { data } = await vocabBuilderInstance.get(`/words/all`);
 
-    console.log("SelectedCategory", data.results);
+    const filteredData = data.results.filter((item) => {
+      if (selectedCategory === "Verb") {
+        if (isIrregularValue) {
+          // console.log(1);
+          return (
+            item.category
+              .toLowerCase()
+              .includes(selectedCategory.toLowerCase()) &&
+            item.isIrregular === isIrregularValue
+          );
+        } else {
+          // console.log(2);
 
-    const searchFilter = data.results.filter((item) =>
-      item.category.toLowerCase().includes(selectedCategory.toLowerCase())
-    );
+          return item.category
+            .toLowerCase()
+            .includes(selectedCategory.toLowerCase());
+        }
+      } else {
+        // console.log(3);
 
-    console.log("searchFilter", searchFilter);
+        return item.category
+          .toLowerCase()
+          .includes(selectedCategory.toLowerCase());
+      }
+    });
 
-    onSearch(searchFilter);
+    if (!filteredData) {
+      onSearch((filteredData = []));
+    }
+
+    // console.log(filteredData, isIrregularValue);
+    onSearch(filteredData);
   };
 
   const handleSelectCategory = (selected) => {
@@ -68,8 +93,8 @@ const Filters = ({ onSearch }) => {
   };
 
   useEffect(() => {
-    onSelectedCategory(selectedCategory);
-  }, [selectedCategory]);
+    onSelectedCategory(selectedCategory, isIrregularValue);
+  }, [selectedCategory, isIrregularValue]);
 
   return (
     <View style={{ gap: 14, width: "100%" }}>
@@ -102,8 +127,7 @@ const Filters = ({ onSearch }) => {
               <TextInput
                 style={styles.input}
                 onBlur={onBlur}
-                onChangeText={onChange}
-                // onSelectionChange={() => onSelectedCategory(selectedCategory)}
+                onChangeText={setChangeCategory}
                 value={selectedCategory}
                 placeholder="Categories"
               />
@@ -133,6 +157,7 @@ const Filters = ({ onSearch }) => {
               color="rgb(133, 170, 159)"
               uncheckedColor="rgba(18, 20, 23, 0.2)"
               colorText="rgb(18, 20, 23)"
+              onRadioChange={(value) => setIrregularValue(value)}
             />
           </View>
         )}

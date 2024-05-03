@@ -43,31 +43,29 @@ export default class WordsTable extends Component {
   }
 
   fetchData = async (page) => {
-    if (this.props.searchWord) {
-      const searchData = this.props.searchWord.map(({ en, ua }) => [
-        en,
-        ua,
-        "",
-        "",
-      ]);
-      // console.log("prop", this.props.searchWord);
-      // console.log("searchData", searchData);
-
-      this.setState({ tableData: searchData });
-
-      // console.log(this.state.tableData);
-    } else {
-      const { data } = await vocabBuilderInstance.get(
-        `/words/all?page=${page}`
-      );
-
-      const tableData = data.results.map(({ en, ua }) => [en, ua, "", ""]);
-      const fullData = data.results;
-
-      this.setState({ tableData });
-      this.setState({ fullData });
-      this.setState({ totalPages: data.totalPages });
-    }
+    // if (this.props.searchWord !== "") {
+    //   console.log(this.props.searchWord);
+    //   console.log(1);
+    //   const searchData = this.props.searchWord.map(({ en, ua }) => [
+    //     en,
+    //     ua,
+    //     "",
+    //     "",
+    //   ]);
+    //   // console.log("prop", this.props.searchWord);
+    //   // console.log("searchData", searchData);
+    //   this.setState({ tableData: searchData });
+    //   this.setState({ currentPage: 1 });
+    //   // console.log(this.state.tableData);
+    // } else {
+    console.log(2);
+    const { data } = await vocabBuilderInstance.get(`/words/all?page=${page}`);
+    const tableData = data.results.map(({ en, ua }) => [en, ua, "", ""]);
+    const fullData = data.results;
+    this.setState({ tableData });
+    this.setState({ fullData });
+    this.setState({ totalPages: data.totalPages });
+    // }
   };
 
   _alertIndex(index, id) {

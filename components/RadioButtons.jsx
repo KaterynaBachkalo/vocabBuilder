@@ -3,8 +3,12 @@ import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import { RadioButton } from "react-native-paper";
 
-const RadioButtons = ({ color, uncheckedColor, colorText }) => {
-  const [selectedValue, setSelectedValue] = useState("regular");
+const RadioButtons = ({ color, uncheckedColor, colorText, onRadioChange }) => {
+  const [isIrregular, setIrregular] = useState(false);
+
+  const onChange = (value) => {
+    onRadioChange(value);
+  };
 
   const route = useRoute();
 
@@ -14,8 +18,11 @@ const RadioButtons = ({ color, uncheckedColor, colorText }) => {
         <View style={styles.radioButton}>
           <RadioButton.Android
             value="regular"
-            status={selectedValue === "regular" ? "checked" : "unchecked"}
-            onPress={() => setSelectedValue("regular")}
+            status={isIrregular === false ? "checked" : "unchecked"}
+            onPress={() => {
+              setIrregular(false);
+              onChange(false);
+            }}
             color={color}
             uncheckedColor={uncheckedColor}
           />
@@ -25,8 +32,11 @@ const RadioButtons = ({ color, uncheckedColor, colorText }) => {
         <View style={styles.radioButton}>
           <RadioButton.Android
             value="irregular"
-            status={selectedValue === "irregular" ? "checked" : "unchecked"}
-            onPress={() => setSelectedValue("irregular")}
+            status={isIrregular === true ? "checked" : "unchecked"}
+            onPress={() => {
+              setIrregular(true);
+              onChange(true);
+            }}
             color={color}
             uncheckedColor={uncheckedColor}
           />
@@ -35,7 +45,7 @@ const RadioButtons = ({ color, uncheckedColor, colorText }) => {
           </Text>
         </View>
       </View>
-      {selectedValue === "irregular" && route.name === "AddWordScreen" && (
+      {isIrregular === true && route.name === "AddWordScreen" && (
         <Text style={styles.text}>
           Such data must be entered in the format I form-II form-III form.
         </Text>
