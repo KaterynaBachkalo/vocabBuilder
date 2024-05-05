@@ -30,6 +30,8 @@ function EditWordModal({ onClose, data, id }) {
   const [inputEnglishValue, setInputEnglishValue] = useState("");
   const [focusedInput, setFocusedInput] = useState(null);
 
+  const dispatch = useDispatch();
+
   const Schema = Yup.object().shape({
     ua: Yup.string().matches(
       /^(?![A-Za-z])[А-ЯІЄЇҐґа-яієїʼ\s]+$/,
@@ -50,8 +52,6 @@ function EditWordModal({ onClose, data, id }) {
     resolver: yupResolver(Schema),
   });
 
-  const dispatch = useDispatch();
-
   const setUkrWordIntoInput = () => {
     setInputUkrainianValue(data.ua);
   };
@@ -60,21 +60,16 @@ function EditWordModal({ onClose, data, id }) {
     setInputEnglishValue(data.en);
   };
 
-  // const reset = () => {
-  //   setInputUkrainianValue("");
-  //   setInputEnglishValue("");
-  // };
-
   useEffect(() => {
     setUkrWordIntoInput();
     setEngWordIntoInput();
   }, []);
 
-  const handleSave = (value) => {
+  const handleSave = () => {
     try {
       const newData = {
-        en: value.en,
-        ua: value.ua,
+        en: inputEnglishValue,
+        ua: inputUkrainianValue,
         category: data.category,
         isIrregular: data.isIrregular,
       };
@@ -85,8 +80,8 @@ function EditWordModal({ onClose, data, id }) {
       reset();
       // Закриття поп-апа
       onClose();
-    } catch (error) {
-      console.log(error);
+    } catch {
+      console.log(errors);
     }
   };
 

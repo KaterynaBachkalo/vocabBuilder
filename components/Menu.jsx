@@ -3,12 +3,19 @@ import { TouchableOpacity, View, Text, StyleSheet } from "react-native";
 import IconArrow from "../images/icons/arrow.svg";
 import { useDispatch } from "react-redux";
 import { logOutThunk } from "../redux/auth/operations";
+import { useNavigation } from "@react-navigation/native";
 
 const Menu = () => {
   const dispatch = useDispatch();
+  const navigation = useNavigation();
 
   const handleLogOut = () => {
-    dispatch(logOutThunk());
+    try {
+      dispatch(logOutThunk());
+      navigation.navigate("Login");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (

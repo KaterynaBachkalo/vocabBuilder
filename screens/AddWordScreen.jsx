@@ -29,7 +29,7 @@ const windowHeight = Dimensions.get("window").height;
 
 const AddWordScreen = () => {
   const [isOpenDropdown, setOpenDropdown] = useState(false);
-  const [radioValue, setRadioValue] = useState("regular");
+  const [radioValue, setRadioValue] = useState(false);
   const [inputUkrainianValue, setInputUkrainianValue] = useState("");
   const [inputEnglishValue, setInputEnglishValue] = useState("");
   const [visible, setVisible] = useState(true);
@@ -76,18 +76,16 @@ const AddWordScreen = () => {
     // Логіка для додавання
     const data = {
       en: value.en,
-      ua: value.ukr,
-      category: selectedCategory,
-      isIrregular:
-        selectedCategory === "Verb" && radioValue === "irregular"
-          ? true
-          : false,
+      ua: value.ua,
+      category: selectedCategory.toLowerCase(),
+      isIrregular: radioValue ? true : false,
     };
-    console.log(data);
+
+    console.log("addWordScreen", data);
     dispatch(createWord(data));
     // Скидання значень після додавання
     // reset();
-    setRadioValue("");
+    setRadioValue(false);
     // Закриття поп-апа
     onClose();
   };
@@ -95,7 +93,7 @@ const AddWordScreen = () => {
   const resetFields = () => {
     setInputUkrainianValue("");
     setInputEnglishValue("");
-    setRadioValue("regular");
+    setRadioValue(false);
     setSelectedCategory("Noun");
   };
 
@@ -163,6 +161,7 @@ const AddWordScreen = () => {
               color="rgb(252, 252, 252)"
               uncheckedColor="rgb(252, 252, 252)"
               colorText="rgb(252, 252, 252)"
+              onRadioChange={() => setRadioValue()}
             />
           )}
 

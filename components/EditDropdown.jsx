@@ -41,6 +41,7 @@ export default EditDropdown;
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     position: "absolute",
     right: 2,
     top: 42,

@@ -52,7 +52,7 @@ const Filters = ({ onSearch }) => {
   };
 
   const onSelectedCategory = async (selectedCategory, isIrregularValue) => {
-    const { data } = await vocabBuilderInstance.get(`/words/all`);
+    const { data } = await vocabBuilderInstance.get(`/words/own`);
 
     const filteredData = data.results.filter((item) => {
       if (selectedCategory === "Verb") {

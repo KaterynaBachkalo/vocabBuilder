@@ -12,6 +12,7 @@ import { Table, Row } from "react-native-table-component";
 import { vocabBuilderInstance } from "../redux/auth/operations";
 import EditDropdown from "./EditDropdown";
 import WordsPagination from "./WordsPagination";
+import axios from "axios";
 
 export default class WordsTable extends Component {
   constructor(props) {
@@ -26,6 +27,7 @@ export default class WordsTable extends Component {
       totalPages: "",
       id: null,
       selectedRowIndex: null,
+      externalTableUpdate: false,
     };
   }
 
@@ -55,17 +57,18 @@ export default class WordsTable extends Component {
       ]);
       // console.log("prop", this.props.searchWord);
       // console.log("searchData", searchData);
-      this.setState({ tableData: searchData });
+      this.setState({ tableData: searchData, externalTableUpdate: true });
       this.setState({ currentPage: 1 });
       // console.log(this.state.tableData);
     } else {
       // console.log(2);
       const { data } = await vocabBuilderInstance.get(
-        `/words/all?page=${page}`
+        `/words/own?page=${page}&limit=7`
       );
+      console.log(data);
       const tableData = data.results.map(({ en, ua }) => [en, ua, "", ""]);
       const fullData = data.results;
-      this.setState({ tableData });
+      this.setState({ tableData, externalTableUpdate: false });
       this.setState({ fullData });
       this.setState({ totalPages: data.totalPages });
     }
@@ -125,12 +128,13 @@ export default class WordsTable extends Component {
 
     return (
       <>
-        <View style={{ gap: 32 }}>
+        <View>
           <ScrollView horizontal={true}>
             <Table
               borderStyle={{
                 borderColor: "transparent",
               }}
+              style={{ paddingBottom: 65 }}
             >
               <Row
                 data={state.tableHead}
@@ -164,17 +168,6 @@ export default class WordsTable extends Component {
                       widthArr={state.widthArr}
                     />
 
-                    {/* {dropdownOpen[index] &&
-                      state.fullData.length !== 0 &&
-                      state.fullData.map((dataItem) => (
-                        <EditDropdown
-                          key={dataItem._id}
-                          onClose={() => this._alertIndex(index, dataItem._id)}
-                          data={dataItem}
-                          id={dataItem._id}
-                        />
-                      ))} */}
-
                     {dropdownOpen[index] &&
                       state.fullData.length !== 0 &&
                       state.fullData.map((dataItem, dataIndex) => (
@@ -183,9 +176,9 @@ export default class WordsTable extends Component {
                             state.selectedRowIndex === dataIndex && ( // Перевірка на відображення для вибраного рядка
                               <EditDropdown
                                 key={dataItem._id}
-                                onClose={() =>
-                                  this._alertIndex(index, dataItem._id)
-                                }
+                                onClose={() => {
+                                  this._alertIndex(index, dataItem._id);
+                                }}
                                 data={dataItem}
                                 id={dataItem._id}
                               />
