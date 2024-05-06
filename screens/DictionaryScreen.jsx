@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useCallback } from "react";
 import { ScrollView, StyleSheet, View } from "react-native";
 import Dashboard from "../components/Dashboard";
 

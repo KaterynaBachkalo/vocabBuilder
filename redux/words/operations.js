@@ -47,7 +47,7 @@ export const addWord = createAsyncThunk(
 
 export const editWord = createAsyncThunk(
   "words/editWord",
-  async (id, { en, ua, category, isIrregular }, thunkAPI) => {
+  async ({ id, en, ua, category, isIrregular }, thunkAPI) => {
     try {
       const response = await vocabBuilderInstance.patch(`/words/edit/${id}`, {
         en,
@@ -65,9 +65,11 @@ export const editWord = createAsyncThunk(
 
 export const fetchAllWords = createAsyncThunk(
   "words/fetchAllWords",
-  async (_, thunkAPI) => {
+  async (page, thunkAPI) => {
     try {
-      const response = await vocabBuilderInstance.get("/words/all");
+      const response = await vocabBuilderInstance.get(
+        `/words/all?page=${page}`
+      );
       //   console.log(response.data);
       return response.data;
     } catch (error) {
@@ -78,10 +80,11 @@ export const fetchAllWords = createAsyncThunk(
 
 export const fetchOwnWords = createAsyncThunk(
   "words/fetchOwnWords",
-  async (_, thunkAPI) => {
+  async (page, thunkAPI) => {
     try {
-      const response = await vocabBuilderInstance.get("/words/own");
-
+      const response = await vocabBuilderInstance.get(
+        `/words/own?page=${page}`
+      );
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);

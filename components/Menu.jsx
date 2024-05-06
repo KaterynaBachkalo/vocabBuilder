@@ -5,7 +5,7 @@ import { useDispatch } from "react-redux";
 import { logOutThunk } from "../redux/auth/operations";
 import { useNavigation } from "@react-navigation/native";
 
-const Menu = () => {
+const Menu = ({ onClose }) => {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
@@ -13,6 +13,7 @@ const Menu = () => {
     try {
       dispatch(logOutThunk());
       navigation.navigate("Login");
+      onClose();
     } catch (error) {
       console.log(error);
     }
@@ -20,16 +21,35 @@ const Menu = () => {
 
   return (
     <View style={{ gap: 28 }}>
-      <TouchableOpacity style={styles.buttonActive}>
+      <TouchableOpacity
+        style={styles.buttonActive}
+        onPress={() => {
+          navigation.navigate("DictionaryScreen");
+          onClose(false);
+        }}
+      >
         <Text style={styles.buttonActiveText}>Dictionary</Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          navigation.navigate("RecommendScreen");
+          onClose();
+        }}
+      >
         <Text style={styles.buttonText}>Recommend</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button}>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() => {
+          navigation.navigate("TrainingScreen");
+          onClose();
+        }}
+      >
         <Text style={styles.buttonText}>Training</Text>
       </TouchableOpacity>
+
       <TouchableOpacity style={styles.logOut} onPress={handleLogOut}>
         <Text style={styles.buttonText}>Log out</Text>
         <IconArrow />

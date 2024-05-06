@@ -27,17 +27,27 @@ const INITIAL_STATE = {
   isLoading: false,
   error: null,
   quantity: null,
+  currentPage: 1,
+  categories: [],
 };
 
 const wordsSlice = createSlice({
   name: "words",
   initialState: INITIAL_STATE,
+  reducers: {
+    setLoading(state, action) {
+      state.isLoading = action.payload;
+    },
+    setCurrentPage(state, action) {
+      state.currentPage = action.payload;
+    },
+  },
 
   extraReducers: (builder) => {
     builder
       .addCase(fetchWordsCategories.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items = action.payload;
+        state.categories = action.payload;
         state.error = null;
       })
 
@@ -54,11 +64,18 @@ const wordsSlice = createSlice({
       })
 
       .addCase(editWord.fulfilled, (state, action) => {
-        state.isLoading = false;
-        state.items = state.items.filter(
-          (word) => word.id !== action.payload.id
-        );
-        state.error = null;
+        return {
+          ...state,
+          items: state.items.map((word) => {
+            console.log("word", word);
+            if (word.id === action.payload.id) {
+              return action.payload;
+            }
+            return word;
+          }),
+          isLoading: false,
+          error: null,
+        };
       })
 
       .addCase(fetchAllWords.fulfilled, (state, action) => {
@@ -69,7 +86,7 @@ const wordsSlice = createSlice({
 
       .addCase(fetchOwnWords.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items = [action.payload.en, action.payload.ua, "", ""];
+        state.items = action.payload;
         state.error = null;
       })
 
@@ -131,5 +148,6 @@ const wordsSlice = createSlice({
       );
   },
 });
+export const { setLoading, setCurrentPage } = wordsSlice.actions;
 // Редюсер слайсу
 export const wordReducer = wordsSlice.reducer;

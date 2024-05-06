@@ -37,17 +37,16 @@ const Filters = ({ onSearch }) => {
   };
 
   const handleSearch = async () => {
-    const { data } = await vocabBuilderInstance.get(`/words/all`);
+    const { data } = await vocabBuilderInstance.get(`/words/own`);
 
     const searchFilter = data.results.filter((item) =>
       item.en.toLowerCase().includes(searchValue.toLowerCase())
     );
-    // console.log(searchFilter);
 
     if (searchFilter) {
       onSearch(searchFilter);
     } else {
-      onSearch(searchFilter == []);
+      onSearch([]);
     }
   };
 
@@ -69,7 +68,7 @@ const Filters = ({ onSearch }) => {
             .includes(selectedCategory.toLowerCase());
         }
       } else if (selectedCategory === "") {
-        onSearch((filteredData = []));
+        onSearch([]);
       } else {
         return item.category
           .toLowerCase()
@@ -78,7 +77,7 @@ const Filters = ({ onSearch }) => {
     });
 
     if (!filteredData) {
-      onSearch((filteredData = []));
+      onSearch([]);
     } else {
       onSearch(filteredData);
     }

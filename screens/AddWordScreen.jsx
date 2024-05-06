@@ -74,15 +74,25 @@ const AddWordScreen = () => {
 
   const handleAdd = (value) => {
     // Логіка для додавання
-    const data = {
-      en: value.en,
-      ua: value.ua,
-      category: selectedCategory.toLowerCase(),
-      isIrregular: radioValue ? true : false,
-    };
+    if (selectedCategory === "Verb") {
+      const data = {
+        en: value.en,
+        ua: value.ua,
+        category: selectedCategory.toLowerCase(),
+        isIrregular: radioValue ? true : false,
+      };
+      console.log("addWordScreen", data);
+      dispatch(createWord(data));
+    } else {
+      const data = {
+        en: value.en,
+        ua: value.ua,
+        category: selectedCategory.toLowerCase(),
+      };
+      console.log("addWordScreen", data);
+      dispatch(createWord(data));
+    }
 
-    console.log("addWordScreen", data);
-    dispatch(createWord(data));
     // Скидання значень після додавання
     // reset();
     setRadioValue(false);

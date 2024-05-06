@@ -66,8 +66,8 @@ const HomeNavigator = () => {
                 ) : (
                   <View style={styles.menu}>
                     <View style={{ padding: 16, gap: 100 }}>
-                      <Header onClose={setOpenMenu} />
-                      <Menu />
+                      <Header onClose={() => setOpenMenu(false)} />
+                      <Menu onClose={() => setOpenMenu(false)} />
                     </View>
                     <Image source={imageMenu} />
                   </View>
