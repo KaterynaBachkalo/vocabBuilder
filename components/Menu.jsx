@@ -12,8 +12,10 @@ const Menu = ({ onClose }) => {
   const handleLogOut = () => {
     try {
       dispatch(logOutThunk());
-      navigation.navigate("Login");
-      onClose();
+      navigation.navigate("LoginScreen");
+      if (typeof onClose === "function") {
+        onClose();
+      }
     } catch (error) {
       console.log(error);
     }
@@ -25,7 +27,9 @@ const Menu = ({ onClose }) => {
         style={styles.buttonActive}
         onPress={() => {
           navigation.navigate("DictionaryScreen");
-          onClose(false);
+          if (typeof onClose === "function") {
+            onClose();
+          }
         }}
       >
         <Text style={styles.buttonActiveText}>Dictionary</Text>
@@ -35,7 +39,9 @@ const Menu = ({ onClose }) => {
         style={styles.button}
         onPress={() => {
           navigation.navigate("RecommendScreen");
-          onClose();
+          if (typeof onClose === "function") {
+            onClose();
+          }
         }}
       >
         <Text style={styles.buttonText}>Recommend</Text>
@@ -44,7 +50,9 @@ const Menu = ({ onClose }) => {
         style={styles.button}
         onPress={() => {
           navigation.navigate("TrainingScreen");
-          onClose();
+          if (typeof onClose === "function") {
+            onClose();
+          }
         }}
       >
         <Text style={styles.buttonText}>Training</Text>

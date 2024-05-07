@@ -25,6 +25,7 @@ import imageMenu from "../images/illustration.png";
 import Header from "./Header";
 import { useSelector } from "react-redux";
 import { selectAuthUser } from "../redux/auth/selectors";
+import WordsTable from "./WordsTable";
 
 const MainStack = createStackNavigator();
 const windowHeight = Dimensions.get("window").height;
@@ -33,6 +34,10 @@ const HomeNavigator = () => {
   const [isOpenMenu, setOpenMenu] = useState(false);
 
   const currentUser = useSelector(selectAuthUser);
+
+  const closeMenu = () => {
+    setOpenMenu(false);
+  };
 
   return (
     <NavigationContainer>
@@ -66,8 +71,8 @@ const HomeNavigator = () => {
                 ) : (
                   <View style={styles.menu}>
                     <View style={{ padding: 16, gap: 100 }}>
-                      <Header onClose={() => setOpenMenu(false)} />
-                      <Menu onClose={() => setOpenMenu(false)} />
+                      <Header onClose={closeMenu} />
+                      <Menu onClose={closeMenu} />
                     </View>
                     <Image source={imageMenu} />
                   </View>

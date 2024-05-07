@@ -4,18 +4,18 @@ import { View } from "react-native";
 import IconEdit from "../images/icons/edit.svg";
 import IconDelete from "../images/icons/delete.svg";
 import EditWordModal from "./EditWordModal";
+import DeleteWordModal from "./DeleteWordModal";
 
 const EditDropdown = ({ onClose, data, id }) => {
-  // console.log(id, data);
-
   const [isOpenEditWordModal, setOpenEditWordModal] = useState(false);
+  const [isOpenDeleteWordModal, setOpenDeleteWordModal] = useState(false);
 
   const handleEdit = (id) => {
     setOpenEditWordModal(true);
   };
 
   const handleDelete = (id) => {
-    onClose();
+    setOpenDeleteWordModal(true);
   };
 
   return (
@@ -33,6 +33,7 @@ const EditDropdown = ({ onClose, data, id }) => {
       {isOpenEditWordModal && (
         <EditWordModal onClose={onClose} data={data} id={id} />
       )}
+      {isOpenDeleteWordModal && <DeleteWordModal onClose={onClose} id={id} />}
     </>
   );
 };
@@ -45,6 +46,7 @@ const styles = StyleSheet.create({
     position: "absolute",
     right: 2,
     top: 42,
+
     flexDirection: "column",
     paddingHorizontal: 24,
     paddingVertical: 12,

@@ -1,26 +1,26 @@
-import React, { Component, useEffect } from "react";
+import React, { Component } from "react";
 import {
   StyleSheet,
   View,
-  Text,
-  TouchableOpacity,
   ScrollView,
-  TouchableWithoutFeedback,
-  Alert,
+  TouchableOpacity,
+  Text,
 } from "react-native";
 import { Table, Row } from "react-native-table-component";
-import { vocabBuilderInstance } from "../redux/auth/operations";
 import EditDropdown from "./EditDropdown";
 import WordsPagination from "./WordsPagination";
-import axios from "axios";
+import { vocabBuilderInstance } from "../redux/auth/operations";
+import IconArrowRight from "../images/icons/arrowRight.svg";
+import ModalError from "./ModalError";
 
 export default class WordsTable extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      tableHead: ["Words", "Translation", "Progress", ""],
+      tableHead: ["Words", "Translation", this.props.title, ""],
       tableData: [["", "", "", ""]],
-      widthArr: [82, 116, 95, 50],
+      fullData: [],
+      widthArr: this.props.widthArr,
       dropdownOpen: Array(1).fill(false),
       fullData: {},
       currentPage: 1,
@@ -28,6 +28,7 @@ export default class WordsTable extends Component {
       id: null,
       selectedRowIndex: null,
       externalTableUpdate: false,
+      isError: false,
     };
   }
 
@@ -48,29 +49,34 @@ export default class WordsTable extends Component {
 
   fetchData = async (page) => {
     if (this.props.searchWord.length !== 0) {
-      // console.log(1);
       const searchData = this.props.searchWord.map(({ en, ua }) => [
         en,
         ua,
         "",
         "",
       ]);
-      // console.log("prop", this.props.searchWord);
-      // console.log("searchData", searchData);
+
       this.setState({ tableData: searchData, externalTableUpdate: true });
       this.setState({ currentPage: 1 });
-      // console.log(this.state.tableData);
     } else {
-      // console.log(2);
-      const { data } = await vocabBuilderInstance.get(
-        `/words/own?page=${page}&limit=7`
-      );
-      console.log(data);
-      const tableData = data.results.map(({ en, ua }) => [en, ua, "", ""]);
-      const fullData = data.results;
+      let result;
+      if (this.props.routeName === "DictionaryScreen") {
+        const { data } = await vocabBuilderInstance.get(
+          `/words/own?page=${page}&limit=7`
+        );
+        result = data;
+      } else {
+        const { data } = await vocabBuilderInstance.get(
+          `/words/all?page=${page}&limit=7`
+        );
+        result = data;
+      }
+
+      const tableData = result.results.map(({ en, ua }) => [en, ua, "", ""]);
+      const fullData = result.results;
       this.setState({ tableData, externalTableUpdate: false });
       this.setState({ fullData });
-      this.setState({ totalPages: data.totalPages });
+      this.setState({ totalPages: result.totalPages });
     }
   };
 
@@ -115,14 +121,46 @@ export default class WordsTable extends Component {
     });
   };
 
+  addWordToDictionary = async (_, index, id) => {
+    console.log(index, id);
+    try {
+      // setState({ id, selectedRowIndex: index });
+      const result = await vocabBuilderInstance.post(`/words/add/${id}`);
+      console.log("result", result);
+      this.setState({ isError: false });
+      console.log("Добавилось", id);
+    } catch (error) {
+      if (error.message === "Request failed with status code 409") {
+        this.setState({ isError: true });
+        // alert("This word is already exist in your list");
+      }
+      console.log(error.message);
+    }
+  };
+
   render() {
+    console.log("isError", this.state.isError);
+
     const { dropdownOpen } = this.state;
     const state = this.state;
-    const element = (data, index, id) => (
+    const { routeName } = this.props;
+
+    const element = (_, index, id) => (
       <TouchableOpacity onPress={() => this._alertIndex(index, id)}>
         <View style={styles.btn}>
           <Text style={styles.btnText}>...</Text>
         </View>
+      </TouchableOpacity>
+    );
+
+    const arrow = (data, index, id) => (
+      <TouchableOpacity
+        onPress={() => {
+          this.addWordToDictionary(data, index, id);
+        }}
+        style={styles.btn}
+      >
+        <IconArrowRight />
       </TouchableOpacity>
     );
 
@@ -149,22 +187,17 @@ export default class WordsTable extends Component {
                       key={index}
                       data={rowData.map((cellData, cellIndex) =>
                         cellIndex === rowData.length - 1
-                          ? element(cellData, index, state.fullData[index]?._id)
+                          ? routeName === "DictionaryScreen"
+                            ? element(
+                                cellData,
+                                index,
+                                state.fullData[index]?._id
+                              )
+                            : arrow(cellData, index, state.fullData[index]?._id)
                           : cellData
                       )}
                       style={styles.row}
-                      textStyle={{
-                        fontFamily: "MacPawFixelDisplay_500",
-                        fontSize: 14,
-                        lineHeight: 19,
-                        textAlign: "left",
-                        borderRightWidth: 1,
-                        borderRightColor: "rgb(219, 219, 219)",
-                        paddingVertical: 16,
-                        paddingLeft: 14,
-                        paddingRight: 10,
-                        color: "rgb(18, 20, 23)",
-                      }}
+                      textStyle={styles.cell}
                       widthArr={state.widthArr}
                     />
 
@@ -198,6 +231,12 @@ export default class WordsTable extends Component {
             firstPage={this.handleFirstPage}
             lastPage={this.handleLastPage}
           />
+          {this.state.isError && (
+            <ModalError
+              text="Opps, This word is already exist in your list"
+              isError={this.state.isError}
+            />
+          )}
         </View>
       </>
     );
@@ -224,7 +263,18 @@ const styles = StyleSheet.create({
     flex: 1,
     borderRightWidth: 1,
   },
-
+  cell: {
+    fontFamily: "MacPawFixelDisplay_500",
+    fontSize: 14,
+    lineHeight: 19,
+    textAlign: "left",
+    borderRightWidth: 1,
+    borderRightColor: "rgb(219, 219, 219)",
+    paddingVertical: 16,
+    paddingLeft: 14,
+    paddingRight: 10,
+    color: "rgb(18, 20, 23)",
+  },
   row: {
     flexDirection: "row",
     backgroundColor: "rgb(252, 252, 252)",
@@ -233,7 +283,10 @@ const styles = StyleSheet.create({
     borderTopWidth: 1,
     flexWrap: "nowrap",
   },
-  btn: {},
+  btn: {
+    justifyContent: "center",
+    alignItems: "center",
+  },
   btnText: {
     textAlign: "center",
     color: "rgba(18, 20, 23, 0.5)",

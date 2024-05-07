@@ -25,7 +25,7 @@ const Header = ({ onClose }) => {
         <Text style={styles.name}>{currentUser?.name}</Text>
         <IconUserMenu />
       </View>
-      <TouchableOpacity onPress={onClose}>
+      <TouchableOpacity onPress={() => onClose()}>
         <IconCross style={styles.cross} />
       </TouchableOpacity>
     </View>

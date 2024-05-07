@@ -13,6 +13,7 @@ const WordsPagination = ({
   firstPage,
   lastPage,
 }) => {
+  // console.log(prevPage, nextPage, totalPages, currentPage, firstPage, lastPage);
   return (
     <View style={styles.container}>
       {currentPage !== 1 && (

@@ -8,14 +8,16 @@ import {
 } from "react-native";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchWordsCategories } from "../redux/words/operations";
-import { selectWords } from "../redux/words/selectors";
+import { selectWordsCategories } from "../redux/words/selectors";
 
 const DropDown = ({ onSelect, widthContainer, heightContainer, colorText }) => {
   const dispatch = useDispatch();
-  const categories = useSelector(selectWords);
 
-  const categoriesUpperCase = categories.map(
-    (i) => i.charAt(0).toUpperCase() + i.slice(1)
+  const categories = useSelector(selectWordsCategories);
+  console.log("categories", categories);
+
+  const categoriesUpperCase = categories?.map(
+    (i) => i.toString().charAt(0).toUpperCase() + i.slice(1)
   );
 
   const handleSelect = (category) => {
@@ -38,8 +40,8 @@ const DropDown = ({ onSelect, widthContainer, heightContainer, colorText }) => {
       ]}
     >
       <View style={styles.wrap}>
-        {categories.lenght !== 0 &&
-          categoriesUpperCase.map((category) => (
+        {categories?.length !== 0 &&
+          categoriesUpperCase?.map((category) => (
             <TouchableOpacity
               key={category}
               onPress={() => handleSelect(category)}

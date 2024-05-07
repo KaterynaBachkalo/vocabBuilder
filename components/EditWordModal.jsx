@@ -17,14 +17,12 @@ import IconEng from "../images/icons/eng.svg";
 import IconError from "../images/icons/error.svg";
 
 import { useDispatch } from "react-redux";
-import { editWord, fetchAllWords } from "../redux/words/operations";
-import { vocabBuilderInstance } from "../redux/auth/operations";
+import { editWord } from "../redux/words/operations";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
 
-function EditWordModal({ onClose, data, id }) {
-  console.log("data", data, id);
+function EditWordModal({ onClose, data, id, rowNumber }) {
   const [isModalVisible, setModalVisible] = useState(true);
   const [inputUkrainianValue, setInputUkrainianValue] = useState("");
   const [inputEnglishValue, setInputEnglishValue] = useState("");
@@ -67,15 +65,27 @@ function EditWordModal({ onClose, data, id }) {
 
   const handleSave = () => {
     try {
-      const newData = {
-        en: inputEnglishValue,
-        ua: inputUkrainianValue,
-        category: data.category,
-        isIrregular: data.isIrregular,
-      };
-      console.log("newData", newData);
+      console.log("category", data.category);
 
-      dispatch(editWord(id, newData));
+      if (data.category === "verb") {
+        const newData = {
+          id,
+          en: inputEnglishValue,
+          ua: inputUkrainianValue,
+          category: data.category.toLowerCase(),
+          isIrregular: data.isIrregular,
+        };
+        dispatch(editWord(newData));
+      } else {
+        const newData = {
+          id,
+          en: inputEnglishValue,
+          ua: inputUkrainianValue,
+          category: data.category.toLowerCase(),
+        };
+        dispatch(editWord(newData));
+      }
+
       // Скидання значень після додавання
       reset();
       // Закриття поп-апа
