@@ -139,8 +139,6 @@ export default class WordsTable extends Component {
   };
 
   render() {
-    console.log("isError", this.state.isError);
-
     const { dropdownOpen } = this.state;
     const state = this.state;
     const { routeName } = this.props;

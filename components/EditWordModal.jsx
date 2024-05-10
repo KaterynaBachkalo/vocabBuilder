@@ -70,8 +70,8 @@ function EditWordModal({ onClose, data, id, rowNumber }) {
       if (data.category === "verb") {
         const newData = {
           id,
-          en: inputEnglishValue,
-          ua: inputUkrainianValue,
+          en: inputEnglishValue.toLowerCase(),
+          ua: inputUkrainianValue.toLowerCase(),
           category: data.category.toLowerCase(),
           isIrregular: data.isIrregular,
         };
@@ -79,8 +79,8 @@ function EditWordModal({ onClose, data, id, rowNumber }) {
       } else {
         const newData = {
           id,
-          en: inputEnglishValue,
-          ua: inputUkrainianValue,
+          en: inputEnglishValue.toLowerCase(),
+          ua: inputUkrainianValue.toLowerCase(),
           category: data.category.toLowerCase(),
         };
         dispatch(editWord(newData));

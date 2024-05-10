@@ -133,14 +133,9 @@ export const fetchTasks = createAsyncThunk(
 
 export const postAnswers = createAsyncThunk(
   "words/postAnswers",
-  async ({ _id, en, us, task }, thunkAPI) => {
+  async (arr, thunkAPI) => {
     try {
-      const response = await vocabBuilderInstance.post("/words/answers", {
-        _id,
-        en,
-        us,
-        task,
-      });
+      const response = await vocabBuilderInstance.post("/words/answers", arr);
 
       return response.data;
     } catch (error) {

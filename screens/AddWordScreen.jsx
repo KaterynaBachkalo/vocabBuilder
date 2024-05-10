@@ -74,42 +74,24 @@ const AddWordScreen = () => {
 
   const handleAdd = (value) => {
     // Логіка для додавання
-    if (selectedCategory === "Verb") {
-      const data = {
-        en: value.en,
-        ua: value.ua,
-        category: selectedCategory.toLowerCase(),
-        isIrregular: radioValue ? true : false,
-      };
-      console.log("addWordScreen", data);
-      dispatch(createWord(data));
-    } else {
-      const data = {
-        en: value.en,
-        ua: value.ua,
-        category: selectedCategory.toLowerCase(),
-      };
-      console.log("addWordScreen", data);
-      dispatch(createWord(data));
-    }
+
+    const data = {
+      en: value.en.toLowerCase(),
+      ua: value.ua.toLowerCase(),
+      category: selectedCategory.toLowerCase(),
+      isIrregular:
+        selectedCategory === "Verb" ? (radioValue ? true : false) : undefined,
+    };
+
+    dispatch(createWord(data));
 
     // Скидання значень після додавання
-    // reset();
     setRadioValue(false);
     // Закриття поп-апа
     onClose();
   };
 
-  const resetFields = () => {
-    setInputUkrainianValue("");
-    setInputEnglishValue("");
-    setRadioValue(false);
-    setSelectedCategory("Noun");
-  };
-
   const handleCancel = () => {
-    // resetFields();
-    // clearErrors();
     reset();
     onClose();
   };

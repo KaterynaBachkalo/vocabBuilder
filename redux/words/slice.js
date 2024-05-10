@@ -11,6 +11,7 @@ import {
   fetchTasks,
   postAnswers,
 } from "./operations";
+import ModalError from "../../components/ModalError";
 
 const handlePending = (state) => {
   state.isLoading = true;
@@ -23,7 +24,10 @@ const handleRejected = (state, action) => {
 };
 
 const INITIAL_STATE = {
-  items: [],
+  itemsOwn: [],
+  itemsAll: [],
+  tasks: [],
+  answers: [],
   isLoading: false,
   error: null,
   quantity: null,
@@ -53,20 +57,20 @@ const wordsSlice = createSlice({
 
       .addCase(createWord.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items.push(action.payload);
+        state.itemsOwn.push(action.payload);
         state.error = null;
       })
 
       .addCase(addWord.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items.push(action.payload);
+        state.itemsOwn.push(action.payload);
         state.error = null;
       })
 
       .addCase(editWord.fulfilled, (state, action) => {
         return {
           ...state,
-          items: state.items.map((word) => {
+          items: state.itemsOwn.map((word) => {
             console.log("word", word);
             if (word.id === action.payload.id) {
               return action.payload;
@@ -80,19 +84,19 @@ const wordsSlice = createSlice({
 
       .addCase(fetchAllWords.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items = action.payload;
+        state.itemsAll = action.payload;
         state.error = null;
       })
 
       .addCase(fetchOwnWords.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items = action.payload;
+        state.itemsOwn = action.payload;
         state.error = null;
       })
 
       .addCase(deleteWord.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items = state.items.filter(
+        state.itemsOwn = state.items.filter(
           (word) => word.id !== action.payload.id
         );
         state.error = null;
@@ -106,13 +110,13 @@ const wordsSlice = createSlice({
 
       .addCase(fetchTasks.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items = action.payload;
+        state.tasks = action.payload;
         state.error = null;
       })
 
       .addCase(postAnswers.fulfilled, (state, action) => {
         state.isLoading = false;
-        state.items.push(action.payload);
+        state.answers.push(action.payload);
         state.error = null;
       })
 

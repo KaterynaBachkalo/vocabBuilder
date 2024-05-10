@@ -2,22 +2,26 @@ import React, { useState, useEffect } from "react";
 import { View, Text, Modal, Pressable } from "react-native";
 
 const ModalError = ({ text, isError }) => {
-  const [modalVisible, setModalVisible] = useState(isError);
+  const [visible, setVisible] = useState(isError);
 
   useEffect(() => {
     if (isError) {
-      setModalVisible(isError);
+      setVisible(isError);
     }
   }, [isError]);
 
-  console.log("modalVisible", modalVisible);
   const closeModal = () => {
-    setModalVisible(!isError);
+    setVisible(!isError);
   };
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
-      <Modal animationType="slide" transparent={true} visible={modalVisible}>
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={visible}
+        onRequestClose={closeModal}
+      >
         <View
           style={{ flex: 1, justifyContent: "center", alignItems: "center" }}
         >

@@ -50,7 +50,7 @@ const Dashboard = () => {
     // }
     >
       <Filters onSearch={handleSearch} />
-      <View style={{ marginTop: 8, gap: 8 }}>
+      <View style={{ marginTop: 8, gap: 8, marginBottom: 32 }}>
         <Statistics />
         <View style={{ flexDirection: "row", gap: 16 }}>
           {route.name === "DictionaryScreen" && <AddWordBtn />}
