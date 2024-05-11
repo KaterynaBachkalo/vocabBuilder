@@ -8,11 +8,7 @@ import {
 } from "react-native";
 import ProgressBar from "../components/ProgressBar";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  selectAnswers,
-  selectError,
-  selectTasks,
-} from "../redux/words/selectors";
+import { selectError, selectTasks } from "../redux/words/selectors";
 import { fetchTasks, postAnswers } from "../redux/words/operations";
 import IconArrowRight from "../images/icons/arrowRight.svg";
 import IconUkr from "../images/icons/ukr.svg";
@@ -27,26 +23,28 @@ import { yupResolver } from "@hookform/resolvers/yup";
 import { Controller, useForm } from "react-hook-form";
 
 const TrainingScreen = () => {
-  const [text, setText] = useState("");
   const [answerArr, setAnswerArr] = useState([]);
   const [currentCardIndex, setCurrentCardIndex] = useState(0); // Індекс поточної картки
   const [isError, setIsError] = useState(false);
   const { tasks } = useSelector(selectTasks);
   const errorMessage = useSelector(selectError);
-  const answer = useSelector(selectAnswers);
 
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
   const Schema = Yup.object().shape({
-    ua: Yup.string().matches(
-      /^(?![A-Za-z])[А-ЯІЄЇҐґа-яієїʼ\s]+$/,
-      "Please enter valid value"
-    ),
-
-    en: Yup.string().matches(
-      /\b[A-Za-z'-]+(?:\s+[A-Za-z'-]+)*\b/,
-      "Please enter valid value"
+    textInput: Yup.string().test(
+      "text-language",
+      "Please enter valid value",
+      function (value) {
+        if (!value) return true; // Якщо значення пусте, повертаємо true
+        const isUkrainian = /^(?![A-Za-z])[А-ЯІЄЇҐґа-яієїʼ\s]+$/.test(value);
+        const isEnglish = /\b[A-Za-z'-]+(?:\s+[A-Za-z'-]+)*\b/.test(value);
+        const isUkrainianTask = !!tasks[currentCardIndex]?.ua;
+        return (
+          (isUkrainian && !isUkrainianTask) || (isEnglish && isUkrainianTask)
+        );
+      }
     ),
   });
 
@@ -65,11 +63,11 @@ const TrainingScreen = () => {
     dispatch(fetchTasks());
   }, []);
 
-  const onNextCard = () => {
+  const saveCurrentWord = (textInput) => {
     if (tasks[currentCardIndex].ua) {
       const answer = {
         _id: tasks[currentCardIndex]._id,
-        en: text ? text.toLowerCase() : null,
+        en: textInput ? textInput.toLowerCase() : null,
         ua: tasks[currentCardIndex].ua.toLowerCase(),
         task: tasks[currentCardIndex].task,
       };
@@ -79,21 +77,28 @@ const TrainingScreen = () => {
       const answer = {
         _id: tasks[currentCardIndex]._id,
         en: tasks[currentCardIndex].en.toLowerCase(),
-        ua: text ? text.toLowerCase() : null,
+        ua: textInput ? textInput.toLowerCase() : null,
         task: tasks[currentCardIndex].task,
       };
       answerArr?.push(answer);
     }
-    setText("");
+  };
+
+  const onNextCard = ({ textInput }) => {
+    saveCurrentWord(textInput);
+    reset();
 
     if (currentCardIndex < tasks.length - 1) {
       setCurrentCardIndex(currentCardIndex + 1);
     }
   };
 
-  const onSave = () => {
+  const onSave = ({ textInput }) => {
+    console.log(textInput);
+    saveCurrentWord(textInput);
+
     dispatch(postAnswers(answerArr));
-    console.log("answerArr", answerArr);
+
     if (answerArr.length !== 0) {
       navigation.navigate("WellDoneScreen");
     }
@@ -112,7 +117,7 @@ const TrainingScreen = () => {
 
   return (
     <View style={{ padding: 16, flex: 1 }}>
-      <ProgressBar />
+      <ProgressBar tasksNumber={tasks.length} />
       <View
         style={{
           padding: 22,
@@ -128,8 +133,8 @@ const TrainingScreen = () => {
           render={({ field: { onChange, value } }) => (
             <TextInput
               placeholder="Введіть переклад"
-              value={text}
-              onChangeText={(text) => setText(text)}
+              value={value}
+              onChangeText={onChange}
               defaultValue=""
             />
           )}
@@ -156,7 +161,10 @@ const TrainingScreen = () => {
           }}
         >
           {tasks?.length - 1 !== currentCardIndex && (
-            <TouchableOpacity onPress={onNextCard} style={styles.nextLabel}>
+            <TouchableOpacity
+              onPress={handleSubmit(onNextCard)}
+              style={styles.nextLabel}
+            >
               <Text style={styles.nextBtn}>Next</Text>
               <IconArrowRight />
             </TouchableOpacity>
@@ -226,7 +234,7 @@ const TrainingScreen = () => {
         )}
       </View>
       <View style={styles.buttonsWrap}>
-        <TouchableOpacity style={styles.button} onPress={onSave}>
+        <TouchableOpacity style={styles.button} onPress={handleSubmit(onSave)}>
           <Text style={styles.addTextBtn}>Save</Text>
         </TouchableOpacity>
         <TouchableOpacity

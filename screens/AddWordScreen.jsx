@@ -30,8 +30,6 @@ const windowHeight = Dimensions.get("window").height;
 const AddWordScreen = () => {
   const [isOpenDropdown, setOpenDropdown] = useState(false);
   const [radioValue, setRadioValue] = useState(false);
-  const [inputUkrainianValue, setInputUkrainianValue] = useState("");
-  const [inputEnglishValue, setInputEnglishValue] = useState("");
   const [visible, setVisible] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState("Noun");
   const [focusedInput, setFocusedInput] = useState(null);

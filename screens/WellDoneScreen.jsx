@@ -2,16 +2,18 @@ import React, { useState } from "react";
 import {
   Modal,
   Text,
-  TextInput,
+  Image,
   View,
   TouchableOpacity,
   StyleSheet,
   Dimensions,
 } from "react-native";
 import { useNavigation } from "@react-navigation/native";
-import { useDispatch } from "react-redux";
 
+import book from "../images/open orange book floating.png";
 import IconCross from "../images/icons/cross.svg";
+import { useSelector } from "react-redux";
+import { selectAnswers } from "../redux/words/selectors";
 
 const windowWidth = Dimensions.get("window").width;
 const windowHeight = Dimensions.get("window").height;
@@ -20,19 +22,36 @@ const WellDoneScreen = () => {
   const [visible, setVisible] = useState(true);
 
   const navigation = useNavigation();
-  const dispatch = useDispatch();
+
+  const answerArr = useSelector(selectAnswers);
+  const answer = answerArr.flat();
+
+  const correct = [];
+  const mistake = [];
+
+  answer.forEach((cor) => {
+    // Перевіряємо, чи вже є слово з таким же _id у масивах correct і mistake
+    const isDuplicateInCorrect = correct.some((word) => word._id === cor._id);
+    const isDuplicateInMistake = mistake.some((word) => word._id === cor._id);
+
+    if (cor.isDone) {
+      // Якщо isDone дорівнює true, додаємо слово до correct,
+      // якщо його ще немає в масиві correct
+      if (!isDuplicateInCorrect && cor.en !== null && cor.ua !== null) {
+        correct.push(cor);
+      }
+    } else {
+      // Якщо isDone дорівнює false, додаємо слово до mistake,
+      // якщо його ще немає в масиві mistake
+      if (!isDuplicateInMistake && cor.en !== null && cor.ua !== null) {
+        mistake.push(cor);
+      }
+    }
+  });
 
   const onClose = () => {
     setVisible(false);
     navigation.navigate("TrainingScreen");
-  };
-
-  const handleSave = () => {
-    console.log("Saved");
-  };
-
-  const handleCancel = () => {
-    console.log("Cancel");
   };
 
   return (
@@ -44,6 +63,7 @@ const WellDoneScreen = () => {
     >
       <View style={styles.modalContainer}>
         <View style={styles.popup}>
+          <Image source={book} style={styles.book} />
           <TouchableOpacity
             onPress={onClose}
             style={{ alignItems: "flex-end", marginBottom: 8 }}
@@ -51,18 +71,37 @@ const WellDoneScreen = () => {
             <IconCross />
           </TouchableOpacity>
           <Text style={styles.title}>Well done</Text>
-          <Text style={styles.subtitle}></Text>
 
-          <View style={styles.buttonContainer}>
-            <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-              <Text style={{ textAlign: "center" }}>Save</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.cancelButton}
-              onPress={handleCancel}
-            >
-              <Text style={{ textAlign: "center" }}>Cancel</Text>
-            </TouchableOpacity>
+          <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "column", marginRight: 32 }}>
+              <Text style={styles.subtitle}>Сorrect answers:</Text>
+              {correct.map((cor) => (
+                <View style={{ gap: 4 }}>
+                  <Text key={cor._id} style={styles.text}>
+                    {cor.task === "en"
+                      ? cor.en
+                      : cor.task === "ua"
+                      ? cor.ua
+                      : null}
+                  </Text>
+                </View>
+              ))}
+            </View>
+
+            <View style={{ flexDirection: "column" }}>
+              <Text style={styles.subtitle}>Mistakes:</Text>
+              {mistake.map((cor) => (
+                <View style={{ gap: 4 }}>
+                  <Text key={cor._id} style={styles.text}>
+                    {cor.task === "en"
+                      ? cor.en
+                      : cor.task === "ua"
+                      ? cor.ua
+                      : null}
+                  </Text>
+                </View>
+              ))}
+            </View>
           </View>
         </View>
       </View>
@@ -84,42 +123,34 @@ const styles = StyleSheet.create({
   popup: {
     backgroundColor: "rgb(133, 170, 159)",
     padding: 16,
+    paddingBottom: 48,
     borderRadius: 15,
     width: windowWidth - 32,
+    minHeight: 459,
   },
   title: {
     fontFamily: "MacPawFixelDisplay_600",
     fontSize: 24,
     lineHeight: 28,
-    marginBottom: 16,
+    marginBottom: 32,
     color: "rgb(252, 252, 252)",
   },
   subtitle: {
     fontFamily: "MacPawFixelDisplay_400",
+    fontSize: 14,
+    lineHeight: 19,
+    marginBottom: 8,
+    color: "rgba(252, 252, 252, 0.5)",
+  },
+  text: {
+    fontFamily: "MacPawFixelDisplay_500",
     fontSize: 16,
     lineHeight: 24,
-    marginBottom: 16,
     color: "rgb(252, 252, 252)",
   },
-
-  buttonContainer: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-  },
-  saveButton: {
-    backgroundColor: "rgb(252, 252, 252)",
-    width: windowWidth / 2 - 36,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    borderRadius: 30,
-    marginRight: 8,
-  },
-  cancelButton: {
-    borderColor: "rgba(252, 252, 252, 0.4)",
-    borderWidth: 1,
-    width: windowWidth / 2 - 36,
-    paddingHorizontal: 12,
-    paddingVertical: 12,
-    borderRadius: 30,
+  book: {
+    position: "absolute",
+    right: 0,
+    bottom: 44,
   },
 });

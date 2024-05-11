@@ -50,8 +50,8 @@ export default class WordsTable extends Component {
   fetchData = async (page) => {
     if (this.props.searchWord.length !== 0) {
       const searchData = this.props.searchWord.map(({ en, ua }) => [
-        en,
-        ua,
+        en.toLowerCase(),
+        ua.toLowerCase(),
         "",
         "",
       ]);
@@ -72,11 +72,19 @@ export default class WordsTable extends Component {
         result = data;
       }
 
-      const tableData = result.results.map(({ en, ua }) => [en, ua, "", ""]);
+      const tableData = result.results.map(({ en, ua }) => [
+        en.toLowerCase(),
+        ua.toLowerCase(),
+        "",
+        "",
+      ]);
       const fullData = result.results;
-      this.setState({ tableData, externalTableUpdate: false });
-      this.setState({ fullData });
-      this.setState({ totalPages: result.totalPages });
+      this.setState({
+        tableData,
+        externalTableUpdate: false,
+        fullData,
+        totalPages: result.totalPages,
+      });
     }
   };
 
@@ -122,17 +130,14 @@ export default class WordsTable extends Component {
   };
 
   addWordToDictionary = async (_, index, id) => {
-    console.log(index, id);
     try {
-      // setState({ id, selectedRowIndex: index });
-      const result = await vocabBuilderInstance.post(`/words/add/${id}`);
-      console.log("result", result);
+      await vocabBuilderInstance.post(`/words/add/${id}`);
       this.setState({ isError: false });
-      console.log("Добавилось", id);
+      alert("You added this word to your list");
     } catch (error) {
       if (error.message === "Request failed with status code 409") {
-        this.setState({ isError: true });
-        // alert("This word is already exist in your list");
+        // this.setState({ isError: true });
+        alert("This word is already exist in your list");
       }
       console.log(error.message);
     }
@@ -229,12 +234,12 @@ export default class WordsTable extends Component {
             firstPage={this.handleFirstPage}
             lastPage={this.handleLastPage}
           />
-          {this.state.isError && (
+          {/* {this.state.isError && (
             <ModalError
               text="Opps, This word is already exist in your list"
               isError={this.state.isError}
             />
-          )}
+          )} */}
         </View>
       </>
     );
