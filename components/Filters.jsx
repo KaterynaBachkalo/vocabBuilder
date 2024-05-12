@@ -40,7 +40,7 @@ const Filters = ({ onSearch }) => {
     const { data } = await vocabBuilderInstance.get(`/words/own`);
 
     const searchFilter = data.results.filter((item) =>
-      item.en.toLowerCase().includes(searchValue.toLowerCase())
+      item.en.toLowerCase().includes(searchValue.toLowerCase().trim())
     );
 
     if (searchFilter) {
@@ -93,14 +93,14 @@ const Filters = ({ onSearch }) => {
   }, [selectedCategory, isIrregularValue]);
 
   return (
-    <View style={{ gap: 14, width: "100%" }}>
+    <View style={{ gap: 14, width: "100%", marginBottom: 40 }}>
       <View style={{ position: "relative" }}>
         <Controller
           control={control}
           render={({ field: { onChange, value, onBlur } }) => (
             <TextInput
               style={styles.input}
-              onBlur={onBlur}
+              onBlur={handleSearch}
               onChangeText={handleSearchInputChange}
               value={searchValue}
               placeholder="Find the word"

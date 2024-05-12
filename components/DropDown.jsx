@@ -14,7 +14,6 @@ const DropDown = ({ onSelect, widthContainer, heightContainer, colorText }) => {
   const dispatch = useDispatch();
 
   const categories = useSelector(selectWordsCategories);
-  console.log("categories", categories);
 
   const categoriesUpperCase = categories?.map(
     (i) => i.toString().charAt(0).toUpperCase() + i.slice(1)

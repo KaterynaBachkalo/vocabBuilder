@@ -24,7 +24,7 @@ export const createWord = createAsyncThunk(
         category,
         isIrregular,
       });
-      console.log("slice", response.data);
+
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);

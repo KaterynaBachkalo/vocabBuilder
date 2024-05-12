@@ -65,8 +65,6 @@ function EditWordModal({ onClose, data, id, rowNumber }) {
 
   const handleSave = () => {
     try {
-      console.log("category", data.category);
-
       if (data.category === "verb") {
         const newData = {
           id,

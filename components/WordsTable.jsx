@@ -19,32 +19,41 @@ export default class WordsTable extends Component {
     this.state = {
       tableHead: ["Words", "Translation", this.props.title, ""],
       tableData: [["", "", "", ""]],
+      searchData: [["", "", "", ""]],
       fullData: [],
       widthArr: this.props.widthArr,
       dropdownOpen: Array(1).fill(false),
-      fullData: {},
       currentPage: 1,
       totalPages: "",
       id: null,
       selectedRowIndex: null,
-      externalTableUpdate: false,
+
       isError: false,
+      isTableData: true,
     };
   }
 
   componentDidMount() {
+    this._isMounted = true;
+
     if (this.state.currentPage === 1) {
       this.fetchData(this.state.currentPage);
     }
   }
 
   componentDidUpdate(prevProps, prevState) {
+    this._isMounted = true;
     if (
       prevState.currentPage !== this.state.currentPage ||
-      prevProps.searchWord !== this.props.searchWord
+      prevState.searchData !== this.state.searchData ||
+      prevState.tableData !== this.state.tableData
     ) {
       this.fetchData(this.state.currentPage);
     }
+  }
+
+  componentWillUnmount() {
+    this._isMounted = false;
   }
 
   fetchData = async (page) => {
@@ -56,8 +65,11 @@ export default class WordsTable extends Component {
         "",
       ]);
 
-      this.setState({ tableData: searchData, externalTableUpdate: true });
-      this.setState({ currentPage: 1 });
+      this.setState({
+        searchData,
+        currentPage: 1,
+        isTableData: false,
+      });
     } else {
       let result;
       if (this.props.routeName === "DictionaryScreen") {
@@ -79,12 +91,15 @@ export default class WordsTable extends Component {
         "",
       ]);
       const fullData = result.results;
-      this.setState({
-        tableData,
-        externalTableUpdate: false,
-        fullData,
-        totalPages: result.totalPages,
-      });
+
+      if (this._isMounted) {
+        this.setState({
+          tableData,
+          fullData,
+          totalPages: result.totalPages,
+          isTableData: true,
+        });
+      }
     }
   };
 
@@ -176,6 +191,7 @@ export default class WordsTable extends Component {
                 borderColor: "transparent",
               }}
               style={{ paddingBottom: 65 }}
+              widthArr={state.widthArr}
             >
               <Row
                 data={state.tableHead}
@@ -183,47 +199,97 @@ export default class WordsTable extends Component {
                 textStyle={styles.text}
                 widthArr={state.widthArr}
               />
-              {state.tableData.map((rowData, index) => (
-                <React.Fragment key={index}>
-                  <View style={{ position: "relative" }}>
-                    <Row
-                      key={index}
-                      data={rowData.map((cellData, cellIndex) =>
-                        cellIndex === rowData.length - 1
-                          ? routeName === "DictionaryScreen"
-                            ? element(
-                                cellData,
-                                index,
-                                state.fullData[index]?._id
-                              )
-                            : arrow(cellData, index, state.fullData[index]?._id)
-                          : cellData
-                      )}
-                      style={styles.row}
-                      textStyle={styles.cell}
-                      widthArr={state.widthArr}
-                    />
+              {state.isTableData
+                ? state.tableData.map((rowData, index) => (
+                    <React.Fragment key={index}>
+                      <View style={{ position: "relative" }}>
+                        <Row
+                          key={`cell-${index}`}
+                          data={rowData.map((cellData, cellIndex) =>
+                            cellIndex === rowData.length - 1
+                              ? routeName === "DictionaryScreen"
+                                ? element(
+                                    cellData,
+                                    index,
+                                    state.fullData[index]?._id
+                                  )
+                                : arrow(
+                                    cellData,
+                                    index,
+                                    state.fullData[index]?._id
+                                  )
+                              : cellData
+                          )}
+                          style={styles.row}
+                          textStyle={styles.cell}
+                          widthArr={state.widthArr}
+                        />
 
-                    {dropdownOpen[index] &&
-                      state.fullData.length !== 0 &&
-                      state.fullData.map((dataItem, dataIndex) => (
-                        <React.Fragment key={dataItem._id}>
-                          {dropdownOpen[index] &&
-                            state.selectedRowIndex === dataIndex && ( // Перевірка на відображення для вибраного рядка
-                              <EditDropdown
-                                key={dataItem._id}
-                                onClose={() => {
-                                  this._alertIndex(index, dataItem._id);
-                                }}
-                                data={dataItem}
-                                id={dataItem._id}
-                              />
-                            )}
-                        </React.Fragment>
-                      ))}
-                  </View>
-                </React.Fragment>
-              ))}
+                        {dropdownOpen[index] &&
+                          state.fullData.length !== 0 &&
+                          state.fullData.map((dataItem, dataIndex) => (
+                            <React.Fragment key={dataItem._id}>
+                              {dropdownOpen[index] &&
+                                state.selectedRowIndex === dataIndex && ( // Перевірка на відображення для вибраного рядка
+                                  <EditDropdown
+                                    key={dataItem._id}
+                                    onClose={() => {
+                                      this._alertIndex(index, dataItem._id);
+                                    }}
+                                    data={dataItem}
+                                    id={dataItem._id}
+                                  />
+                                )}
+                            </React.Fragment>
+                          ))}
+                      </View>
+                    </React.Fragment>
+                  ))
+                : state.searchData.map((rowData, index) => (
+                    <React.Fragment key={index}>
+                      <View style={{ position: "relative" }}>
+                        <Row
+                          key={`cell-${index}`}
+                          data={rowData.map((cellData, cellIndex) =>
+                            cellIndex === rowData.length - 1
+                              ? routeName === "DictionaryScreen"
+                                ? element(
+                                    cellData,
+                                    index,
+                                    state.fullData[index]?._id
+                                  )
+                                : arrow(
+                                    cellData,
+                                    index,
+                                    state.fullData[index]?._id
+                                  )
+                              : cellData
+                          )}
+                          style={styles.row}
+                          textStyle={styles.cell}
+                          widthArr={state.widthArr}
+                        />
+
+                        {dropdownOpen[index] &&
+                          state.fullData.length !== 0 &&
+                          state.fullData.map((dataItem, dataIndex) => (
+                            <React.Fragment key={dataItem._id}>
+                              {dropdownOpen[index] &&
+                                state.selectedRowIndex === dataIndex && ( // Перевірка на відображення для вибраного рядка
+                                  <EditDropdown
+                                    key={dataItem._id}
+                                    onClose={() => {
+                                      this._alertIndex(index, dataItem._id);
+                                    }}
+                                    data={dataItem}
+                                    id={dataItem._id}
+                                  />
+                                )}
+                            </React.Fragment>
+                          ))}
+                      </View>
+                    </React.Fragment>
+                  ))}
             </Table>
           </ScrollView>
           <WordsPagination
@@ -281,7 +347,6 @@ const styles = StyleSheet.create({
   row: {
     flexDirection: "row",
     backgroundColor: "rgb(252, 252, 252)",
-    flexWrap: "wrap",
     borderColor: "rgb(219, 219, 219)",
     borderTopWidth: 1,
     flexWrap: "nowrap",
